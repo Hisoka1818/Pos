@@ -1,7 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Core;
-using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
 
@@ -9,15 +8,14 @@ namespace Pos.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        private readonly DataContext _context;
+        
         private readonly ICustomerService _customerService;
         private readonly INotyfService _notify;
 
-        public CustomerController(ICustomerService customerService, INotyfService notify, DataContext context)
+        public CustomerController(ICustomerService customerService, INotyfService notify)
         {
             _customerService = customerService;
             _notify = notify;
-            _context = context;
         }
 
         [HttpGet]

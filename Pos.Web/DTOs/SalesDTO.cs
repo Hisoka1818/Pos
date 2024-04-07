@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace Pos.Web.Data.Entities
+namespace Pos.Web.DTOs
 {
-    public class Sales
+    public class SalesDTO
     {
         public int Id { get; set; }
 
@@ -14,13 +14,10 @@ namespace Pos.Web.Data.Entities
 
         public string PaymentMethod { get; set; }
 
-        public string? SalesType { get; set;}
+        public string? SalesType { get; set; }
 
         public int CustomerId { get; set; }
 
-        //propiedad de navegacion
-        public Customer Customer { get; set; }
-
-        //public List<SalesDetail> SalesDetails { get; set; }
+        public IEnumerable<SelectListItem>? Customer { get; set; }
     }
 }
