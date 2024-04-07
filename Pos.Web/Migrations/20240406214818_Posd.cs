@@ -5,17 +5,34 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Pos.Web.Migrations
 {
-    public partial class SalesPos : Migration
+    public partial class Posd : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Customer",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerType = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customer", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    nombre = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,12 +48,19 @@ namespace Pos.Web.Migrations
                     DateSales = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DiscountsSales = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TotalSales = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SalesType = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SalesType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sales", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sales_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,6 +90,11 @@ namespace Pos.Web.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sales_CustomerId",
+                table: "Sales",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SalesDetail_ProductId",
                 table: "SalesDetail",
                 column: "ProductId");
@@ -81,6 +110,9 @@ namespace Pos.Web.Migrations
 
             migrationBuilder.DropTable(
                 name: "Sales");
+
+            migrationBuilder.DropTable(
+                name: "Customer");
         }
     }
 }

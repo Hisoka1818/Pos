@@ -19,6 +19,7 @@ namespace Pos.Web.Data
         public DbSet<Sales> Sales { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<SalesDetail> SalesDetail { get; set; }
+        public DbSet<Customer> Customer { get; set; }
 
 
     }

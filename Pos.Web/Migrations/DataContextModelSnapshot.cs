@@ -22,6 +22,39 @@ namespace Pos.Web.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("Pos.Web.Data.Entities.Customer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CustomerType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Customer");
+                });
+
             modelBuilder.Entity("Pos.Web.Data.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -30,7 +63,8 @@ namespace Pos.Web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("nombre")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -46,6 +80,9 @@ namespace Pos.Web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateSales")
                         .HasColumnType("datetime2");
 
@@ -53,6 +90,7 @@ namespace Pos.Web.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("PaymentMethod")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SalesType")
@@ -62,6 +100,8 @@ namespace Pos.Web.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Sales");
                 });
@@ -87,6 +127,17 @@ namespace Pos.Web.Migrations
                     b.ToTable("SalesDetail");
                 });
 
+            modelBuilder.Entity("Pos.Web.Data.Entities.Sales", b =>
+                {
+                    b.HasOne("Pos.Web.Data.Entities.Customer", "Customer")
+                        .WithMany("Sales")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("Pos.Web.Data.Entities.SalesDetail", b =>
                 {
                     b.HasOne("Pos.Web.Data.Entities.Product", null)
@@ -100,6 +151,11 @@ namespace Pos.Web.Migrations
                         .HasForeignKey("SalesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Pos.Web.Data.Entities.Customer", b =>
+                {
+                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("Pos.Web.Data.Entities.Product", b =>

@@ -1,5 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AspNetCoreHero.ToastNotification;
+using AspNetCoreHero.ToastNotification.Extensions;
+using Microsoft.EntityFrameworkCore;
 using Pos.Web.Data;
+using Pos.Web.Services;
+using static Pos.Web.Services.ICustomerService;
+using static Pos.Web.Services.ISalesService;
 
 namespace Pos.Web
 {
@@ -13,7 +18,49 @@ namespace Pos.Web
                 conf.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection"));
             });
 
+            // Services
+            AddServices(builder);
+
+            // Toast
+            builder.Services.AddNotyf(config =>
+            {
+                config.DurationInSeconds = 10;
+                config.IsDismissable = true;
+                config.Position = NotyfPosition.BottomRight;
+            });
+
             return builder;
         }
+
+        private static void AddServices(this WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<ISalesService, SalesService>();
+            builder.Services.AddScoped<ICustomerService, CustomerService>();
+        }
+
+        public static WebApplication AddCustomConfiguration(this WebApplication app)
+        {
+            app.UseNotyf();
+
+            return app;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //
+
     }
 }

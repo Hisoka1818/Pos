@@ -1,0 +1,92 @@
+﻿@model IEnumerable<Pos.Web.Data.Entities.Customer>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a class ="btn btn-info" asp-action="Create">Nuevo Cliente</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EmailAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CustomerType)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EmailAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CustomerType)
+            </td>
+            <td>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
+                        <button class="btn btn-danger btnDelete">Eliminar</button>
+                    </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            $('.btnDelete').click(function (event) {
+
+                event.preventDefault();
+
+                Swal.fire({
+                    title: "¿Desea eliminar la sección?",
+                    text: "No prodrá revertirlo",
+                    icon: "question",
+                    showCancelButton: true,
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        const form = $(this).closest('form');
+
+                        form.submit();
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+}

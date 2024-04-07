@@ -10,9 +10,13 @@
 
         public decimal TotalSales { get; set; }
 
-        public string? PaymentMethod { get; set; }
+        public string PaymentMethod { get; set; }
 
         public string? SalesType { get; set;}
+
+        public int CustomerId { get; set; }
+
+        public Customer Customer { get; set; }
 
         public List<SalesDetail> SalesDetails { get; set; }
 
