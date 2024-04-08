@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pos.Web.Data.Entities;
 
 namespace Pos.Web.Data
 {
@@ -6,7 +7,8 @@ namespace Pos.Web.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            public Dbset<Product> Products { get; set; }
         }
+        public DbSet<Products> Products { get; set; }
+        public DbSet<Categories> Categories { get; set; }
     }
 }
