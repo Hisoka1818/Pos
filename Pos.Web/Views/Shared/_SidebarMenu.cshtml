@@ -1,0 +1,34 @@
+﻿<aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Home"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Dashboard"
+                                                ? "" : "collapsed")" asp-action="Dashboard" asp-controller="Home">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Customer"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Index"
+                                                ? "" : "collapsed")" asp-controller="Customer" asp-action="Index">
+                <i class="bi bi-grid"></i>
+                <span>Customer</span>
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Sales"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Index"
+                                                ? "" : "collapsed")" asp-controller="Sales" asp-action="Index">
+                <i class="bi bi-grid"></i>
+                <span>Sales</span>
+            </a>
+        </li>
+
+    </ul>
+
+</aside>

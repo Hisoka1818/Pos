@@ -2,9 +2,18 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Ventas</li>
+        </ol>
+    </nav>
+</div>
 
 <p>
     <a class="btn btn-info" asp-action="Create">Nueva Venta</a>

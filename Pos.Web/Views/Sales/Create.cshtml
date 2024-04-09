@@ -2,9 +2,19 @@
 
 @{
     ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
 
-<h1>Nueva Venta</h1>
+<div class="pagetitle">
+    <h1>Nueva Venta</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Ventas</li>
+            <li class="breadcrumb-item active">Nueva Venta</li>
+        </ol>
+    </nav>
+</div>
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">

@@ -2,9 +2,19 @@
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="pagetitle">
+    <h1>Editar cliente</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Clientes</li>
+            <li class="breadcrumb-item active">Editar cliente</li>
+        </ol>
+    </nav>
+</div>
 <form asp-action="Update" method="post">
     <input type="hidden" asp-for="Id" />
     <div class="form-group">
