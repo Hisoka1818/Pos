@@ -80,7 +80,7 @@ namespace Pos.Web.Services
                     _context.Customer.Update(model);
                     await _context.SaveChangesAsync();
 
-                    return ResponseHelper<Customer>.MakeResponseSuccess(model, "Cliente editado con éxito");
+                    return ResponseHelper<Customer>.MakeResponseSuccess(model, "Cliente actualizado con éxito");
 
                 }
                 catch (Exception ex)
