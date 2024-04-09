@@ -2,6 +2,7 @@
 using AspNetCoreHero.ToastNotification.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Pos.Web.Data;
+using Pos.Web.Data.Seeders;
 using Pos.Web.Services;
 using static Pos.Web.Services.ICustomerService;
 using static Pos.Web.Services.ISalesService;
@@ -36,30 +37,28 @@ namespace Pos.Web
         {
             builder.Services.AddScoped<ISalesService, SalesService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
+            builder.Services.AddTransient<SeedDb>();
         }
 
         public static WebApplication AddCustomConfiguration(this WebApplication app)
         {
             app.UseNotyf();
 
+            SeedData(app);
+
             return app;
         }
 
+        private static void SeedData(WebApplication app)
+        {
+            IServiceScopeFactory scopedFactory = app.Services.GetService<IServiceScopeFactory>();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            using (IServiceScope scope = scopedFactory!.CreateScope())
+            {
+                SeedDb service = scope.ServiceProvider.GetService<SeedDb>();
+                service!.SeedAsync().Wait();  //malo
+            }
+        }
         //
 
     }
