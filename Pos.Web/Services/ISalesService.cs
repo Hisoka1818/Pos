@@ -1,4 +1,6 @@
 ﻿
+using Humanizer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
 using Pos.Web.Data;
@@ -14,6 +16,10 @@ namespace Pos.Web.Services
         public Task<Response<List<Sales>>> GetListAsync();
 
         public Task<Response<Sales>> CreateAsync(SalesDTO model);
+
+        public Task<Response<Sales>> UpdateAsync(SalesDTO model);
+
+        public Task<Response<Sales>> DeleteAsync([FromRoute] int id);
 
         public class SalesService : ISalesService
         {
@@ -49,6 +55,23 @@ namespace Pos.Web.Services
                 }
             }
 
+            public async Task<Response<Sales>> DeleteAsync([FromRoute] int id)
+            {
+                try
+                {
+                    Sales sales = await _context.Sales.FirstOrDefaultAsync(a => a.Id == id);
+                    _context.Sales.Remove(sales);
+                    await _context.SaveChangesAsync();
+
+                    return ResponseHelper<Sales>.MakeResponseSuccess(sales, "Venta eliminada con exito");
+                }
+                catch (Exception ex)
+                {
+                    return ResponseHelper<Sales>.MakeResponseFail(ex);
+                }
+               
+            }
+
             public async Task<Response<List<Sales>>> GetListAsync()
             {
                 try
@@ -59,6 +82,31 @@ namespace Pos.Web.Services
                 catch (Exception ex)
                 {
                     return ResponseHelper<List<Sales>>.MakeResponseFail(ex);
+                }
+            }
+
+            public async Task<Response<Sales>> UpdateAsync(SalesDTO model)
+            {
+                try
+                {
+                    Sales sales = await _context.Sales.FirstOrDefaultAsync(a => a.Id == model.Id);
+
+                    sales.DateSales = model.DateSales;
+                    sales.SalesType = model.SalesType;
+                    sales.PaymentMethod = model.PaymentMethod;
+                    sales.TotalSales = model.TotalSales;
+                    sales.DiscountsSales = model.DiscountsSales;
+                    sales.Customer = await _context.Customer.FirstOrDefaultAsync(a => a.Id == model.CustomerId);
+
+                    _context.Sales.Update(sales);
+                    await _context.SaveChangesAsync();
+
+                    return ResponseHelper<Sales>.MakeResponseSuccess(sales, "Venta actualizada con exito");
+
+                }
+                catch (Exception ex)
+                {
+                    return ResponseHelper<Sales>.MakeResponseFail(ex);
                 }
             }
         }

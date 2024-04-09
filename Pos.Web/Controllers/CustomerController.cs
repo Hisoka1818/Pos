@@ -8,7 +8,6 @@ namespace Pos.Web.Controllers
 {
     public class CustomerController : Controller
     {
-        
         private readonly ICustomerService _customerService;
         private readonly INotyfService _notify;
 

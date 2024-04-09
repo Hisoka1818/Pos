@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +68,112 @@ namespace Pos.Web.Controllers
                 _notify.Error(response.Message);
                 return View(model);
 
+            }
+            catch (Exception ex)
+            {
+                _notify.Error(ex.Message);
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            try
+            {
+                Sales? sales = await _context.Sales.Include(b => b.Customer).FirstOrDefaultAsync(b => b.Id == id);
+
+                if (sales is null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                SalesDTO salesDTO = new SalesDTO
+                {
+                    Id = id,
+                    CustomerId = sales.CustomerId,
+                    DateSales = sales.DateSales,
+                    SalesType = sales.SalesType,
+                    PaymentMethod = sales.PaymentMethod,
+                    DiscountsSales = sales.DiscountsSales,
+                    TotalSales = sales.TotalSales,
+                    Customer = await _context.Customer.Select(a => new SelectListItem
+                    {
+                        Text = a.FirstName,
+                        Value = a.Id.ToString(),
+                    }).ToArrayAsync(),
+
+                };
+
+                return View(salesDTO);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(SalesDTO model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    model.Customer = await _context.Customer.Select(a => new SelectListItem
+                    {
+                        Text = a.FirstName,
+                        Value = a.Id.ToString(),
+                    }).ToArrayAsync();
+                    return View(model);
+                }
+                Sales sales = await _context.Sales.FirstOrDefaultAsync(a => a.Id == model.Id);
+
+                if (sales is null)
+                {
+                    return NotFound();
+                }
+
+                Response<Sales> response = await _salesService.UpdateAsync(model);
+
+                if (response.IsSuccess)
+                {
+                    _notify.Success(response.Message);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _notify.Error(response.Message);
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                _notify.Error(ex.Message);
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(CustomerDTO model, [FromRoute] int id)
+        {
+            try
+            {
+                Sales sales = await _context.Sales.FirstOrDefaultAsync(a => a.Id == id);
+
+                if (sales is null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                Response<Sales> response = await _salesService.DeleteAsync(id);
+                if (response.IsSuccess)
+                {
+                    _notify.Success(response.Message);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _notify.Error(response.Message);
+                return View(model);
             }
             catch (Exception ex)
             {
