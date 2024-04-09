@@ -5,9 +5,6 @@ using Pos.Web.Data.Entities;
 using Pos.Web.Helpers;
 
 
-
-
-
 namespace Pos.Web.Services
 {
     public interface ICustomerService

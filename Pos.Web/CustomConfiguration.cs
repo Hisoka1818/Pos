@@ -56,10 +56,8 @@ namespace Pos.Web
             using (IServiceScope scope = scopedFactory!.CreateScope())
             {
                 SeedDb service = scope.ServiceProvider.GetService<SeedDb>();
-                service!.SeedAsync().Wait();  //malo
+                service!.SeedAsync().Wait();
             }
         }
-        //
-
     }
 }

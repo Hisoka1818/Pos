@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
 
 namespace Pos.Web.DTOs
 {
@@ -10,7 +9,7 @@ namespace Pos.Web.DTOs
         public DateTime DateSales { get; set; }
 
         public decimal DiscountsSales { get; set; }
-        [DataType(DataType.Currency)]
+
         public decimal TotalSales { get; set; }
 
         public string PaymentMethod { get; set; }

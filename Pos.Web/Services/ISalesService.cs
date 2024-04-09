@@ -1,6 +1,4 @@
-﻿
-using Humanizer;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
 using Pos.Web.Data;

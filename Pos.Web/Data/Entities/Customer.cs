@@ -23,7 +23,5 @@ namespace Pos.Web.Data.Entities
         [Display(Name = "Tipo de cliente")]
         public string CustomerType { get; set;}
 
-        //propiedad de navegacion
-
     }
 }
