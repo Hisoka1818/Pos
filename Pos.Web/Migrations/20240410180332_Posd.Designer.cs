@@ -12,7 +12,7 @@ using Pos.Web.Data;
 namespace Pos.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240406214818_Posd")]
+    [Migration("20240410180332_Posd")]
     partial class Posd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,27 @@ namespace Pos.Web.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Pos.Web.Data.Entities.Categories", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("categoryDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("categoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
 
             modelBuilder.Entity("Pos.Web.Data.Entities.Customer", b =>
                 {
@@ -132,7 +153,7 @@ namespace Pos.Web.Migrations
             modelBuilder.Entity("Pos.Web.Data.Entities.Sales", b =>
                 {
                     b.HasOne("Pos.Web.Data.Entities.Customer", "Customer")
-                        .WithMany("Sales")
+                        .WithMany()
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -147,25 +168,9 @@ namespace Pos.Web.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Pos.Web.Data.Entities.Sales", null)
-                        .WithMany("SalesDetails")
-                        .HasForeignKey("SalesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Pos.Web.Data.Entities.Customer", b =>
-                {
-                    b.Navigation("Sales");
                 });
 
             modelBuilder.Entity("Pos.Web.Data.Entities.Product", b =>
-                {
-                    b.Navigation("SalesDetails");
-                });
-
-            modelBuilder.Entity("Pos.Web.Data.Entities.Sales", b =>
                 {
                     b.Navigation("SalesDetails");
                 });

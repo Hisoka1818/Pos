@@ -35,12 +35,12 @@ namespace Pos.Web
 
             return builder;
         }
-            builder.Services.AddScoped<ICategoriesService, CategoriesService>();
-
+            
         private static void AddServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<ISalesService, SalesService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
+            builder.Services.AddScoped<ICategoriesService, CategoriesService>();
             builder.Services.AddTransient<SeedDb>();
         }
 

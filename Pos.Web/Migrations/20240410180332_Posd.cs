@@ -10,6 +10,20 @@ namespace Pos.Web.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    categoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    categoryDescription = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Customer",
                 columns: table => new
                 {
@@ -81,12 +95,6 @@ namespace Pos.Web.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_SalesDetail_Sales_SalesId",
-                        column: x => x.SalesId,
-                        principalTable: "Sales",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -103,16 +111,19 @@ namespace Pos.Web.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "SalesDetail");
-
-            migrationBuilder.DropTable(
-                name: "Products");
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Sales");
 
             migrationBuilder.DropTable(
+                name: "SalesDetail");
+
+            migrationBuilder.DropTable(
                 name: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "Products");
         }
     }
 }
