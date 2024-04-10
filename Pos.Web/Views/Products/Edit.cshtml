@@ -1,4 +1,5 @@
-﻿@model Pos.Web.Data.Entities.Products
+﻿
+@model Pos.Web.DTO.ProductsDTO
 
 @{
     ViewData["Title"] = "Edit";
@@ -10,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Update">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -35,7 +36,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
-                <select asp-for="CategoriesId" class="form-control" asp-items="ViewBag.CategoriesId"></select>
+                <select asp-for="CategoriesId" class="form-control" asp-items="Model.Categories"></select>
                 <span asp-validation-for="CategoriesId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -45,9 +46,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

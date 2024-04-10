@@ -1,4 +1,6 @@
-﻿namespace Pos.Web.Data.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Pos.Web.Data.Entities
 {
     public class Products
     {
@@ -15,6 +17,7 @@
         public int CategoriesId { get; set; }
 
         //propiedades de navegación 
+       
         public  Categories Categories { get; set;}
 
     }
