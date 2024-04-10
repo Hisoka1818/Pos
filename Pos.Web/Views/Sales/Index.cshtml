@@ -1,0 +1,113 @@
+﻿@model IEnumerable<Pos.Web.Data.Entities.Sales>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Ventas</li>
+        </ol>
+    </nav>
+</div>
+
+<p>
+    <a class="btn btn-info" asp-action="Create">Nueva Venta</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateSales)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiscountsSales)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSales)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PaymentMethod)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SalesType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateSales)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiscountsSales)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalSales)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PaymentMethod)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SalesType)
+            </td>
+                <td>
+                    @if (item.Customer != null)
+                    {
+                        @item.Customer.FirstName @Html.Raw("&nbsp;") @item.Customer.LastName
+                    }
+                    else
+                    {
+                        <text>Cliente no asignado</text>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
+                        <button class="btn btn-danger btnDelete">Eliminar</button>
+                    </form>
+                </td>
+        </tr>
+}
+    </tbody>
+</table>
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            $('.btnDelete').click(function (event) {
+
+                event.preventDefault();
+
+                Swal.fire({
+                    title: "¿Desea eliminar el registro de la venta?",
+                    text: "No prodrá revertirlo",
+                    icon: "question",
+                    showCancelButton: true,
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        const form = $(this).closest('form');
+
+                        form.submit();
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+}
