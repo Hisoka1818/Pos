@@ -7,11 +7,12 @@ using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTO;
 using Pos.Web.Services;
+using System.Linq.Expressions;
 
 
 namespace Pos.Web.Controllers
 {
-  
+
 
 
     public class ProductsController : Controller
@@ -77,6 +78,79 @@ namespace Pos.Web.Controllers
                 return View(model);
             }
         }
-    }
 
+
+        
+
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] int id)
+        {
+            try
+            {
+                Products? products = await _context.Products.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
+
+                if (products is null)
+                {
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                ProductsDTO productsDTO = new ProductsDTO
+                {
+                    Name = products.Name,
+                    price = products.price,
+                    reference = products.reference,
+                    area = products.area,
+                    Categories = await _context.Categories.Select(a => new SelectListItem
+
+                    {
+                        Text = a.Name,
+                        Value = a.Id.ToString(),
+                    }).ToArrayAsync(),
+                };
+
+                return View(productsDTO);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update (ProductsDTO model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    model.Categories = await _context.Categories.Select(a => new SelectListItem
+                    {
+                        Text = a.Name,
+                        Value = a.Id.ToString(),
+
+                    }).ToArrayAsync();
+                    return View(model); 
+                }
+                Products products = await _context.Produts.FirstOrDefaultAsync(a => a.id == model.Id);
+
+                if (products is null)
+                {
+                    return NotFound();
+                }
+
+                Response<Products> response = await _productsService.UpdateAsync(model);
+
+                if (response.IsSuccess)
+                {
+                    _notify.Success(response.Message);
+                    return RedirectToAction(nameof(Index));
+                }
+                _notify.Error()
+            }
+        }
+
+
+    }
 }

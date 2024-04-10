@@ -12,7 +12,8 @@ namespace Pos.Web.Services
     {
         public Task<Response<List<Products>>> GetListAsync();
         public Task<Response<Products>> CreateAsync(ProductsDTO model);
-       
+
+        public Task<Response<Products>> UpdateAsync(ProductsDTO model);
 
         public class ProductsService : IProductsService
         {
@@ -60,6 +61,35 @@ namespace Pos.Web.Services
                 {
                     return ResponseHelper<List<Products>>.MakeResponseFail(ex);
                 }
+            }
+
+            public async Task<Response<Products>> UpdateAsync(ProductsDTO model)
+            {
+
+                try
+                {
+                    Products products = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
+                    
+                    products.Name = model.Name;
+                    products.price = model.price;
+                    products.reference = model.reference;
+                    products.area = model.area;
+                    products.Categories = await _context.Categories.FirstOrDefaultAsync(a => a.Id == model.CategoriesId);
+
+
+
+                   _context.Products.Update(products);
+                    await _context.SaveChangesAsync();
+
+
+                    return ResponseHelper<Products>.MakeResponseSuccess(products, "Producto Actualizado  con exito");
+                }
+                catch (Exception ex)
+                {
+                    return ResponseHelper<Products>.MakeResponseFail(ex);
+                }
+
+
             }
         }
     }
