@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
@@ -14,6 +15,8 @@ namespace Pos.Web.Services
         public Task<Response<Products>> CreateAsync(ProductsDTO model);
 
         public Task<Response<Products>> UpdateAsync(ProductsDTO model);
+
+        Task<Response<Products>> DeleteAsync(int id);
 
         public class ProductsService : IProductsService
         {
@@ -88,9 +91,25 @@ namespace Pos.Web.Services
                 {
                     return ResponseHelper<Products>.MakeResponseFail(ex);
                 }
+            }
 
+            public async Task<Response<Products>> DeleteAsync([FromRoute] int id)
+            {
+                try
+                {
+                    Products products = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
+                    _context.Products.Remove(products);
+                    await _context.SaveChangesAsync();
+
+                    return ResponseHelper<Products>.MakeResponseSuccess(products, "Producto eliminada con exito");
+                }
+                catch (Exception ex)
+                {
+                    return ResponseHelper<Products>.MakeResponseFail(ex);
+                }
 
             }
+
         }
     }
 }

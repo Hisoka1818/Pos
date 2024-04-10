@@ -1,17 +1,18 @@
-﻿@model Pos.Web.DTO.ProductsDTO
+﻿@model Pos.Web.Data.Entities.Products
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
 <h4>Products</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label class="form-label">Nombre del producto</label>
                 <input asp-for="Name" class="form-control" />
@@ -28,19 +29,18 @@
                 <span asp-validation-for="reference" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="form-label">Area donde se encuentraa</label>
+                <label class="form-label">Area donde se encuentra</label>
                 <input asp-for="area" class="form-control" />
                 <span asp-validation-for="area" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label class="form-label">Categoria</label>
-                <select asp-for="CategoriesId" class ="form-control" asp-items="Model.Categories"></select>
+                <select asp-for="CategoriesId" class="form-control" asp-items="ViewBag.CategoriesId"></select>
                 <span asp-validation-for="CategoriesId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Crear producto nuevo" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-           
         </form>
     </div>
 </div>

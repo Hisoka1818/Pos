@@ -97,6 +97,8 @@ namespace Pos.Web.Controllers
 
                 ProductsDTO productsDTO = new ProductsDTO
                 {
+                    Id = id,
+                    CategoriesId = products.CategoriesId,
                     Name = products.Name,
                     price = products.price,
                     reference = products.reference,
@@ -119,7 +121,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update (ProductsDTO model)
+        public async Task<IActionResult> Update(ProductsDTO model)
         {
             try
             {
@@ -129,13 +131,12 @@ namespace Pos.Web.Controllers
                     {
                         Text = a.Name,
                         Value = a.Id.ToString(),
-
                     }).ToArrayAsync();
-                    return View(model); 
+                    return View(model);
                 }
-                Products products = await _context.Produts.FirstOrDefaultAsync(a => a.id == model.Id);
+                Products sales = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
 
-                if (products is null)
+                if (sales is null)
                 {
                     return NotFound();
                 }
@@ -147,10 +148,47 @@ namespace Pos.Web.Controllers
                     _notify.Success(response.Message);
                     return RedirectToAction(nameof(Index));
                 }
-                _notify.Error()
+
+                _notify.Error(response.Message);
+                return View(model);
+
+            }
+            catch (Exception ex)
+            {
+                _notify.Error(ex.Message);
+                return View(model);
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(CategoriesDTO model, [FromRoute] int id)
+        {
+            try
+            {
+                Products products = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
 
+                if (products is null)
+                {
+                    return RedirectToAction(nameof(Index));
+                }
+
+                Response<Products> response = await _productsService.DeleteAsync( id);
+
+
+                if (response.IsSuccess)
+                {
+                    _notify.Success(response.Message);
+                    return RedirectToAction(nameof(Index));
+                }
+
+                _notify.Error(response.Message);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _notify.Error(ex.Message);
+                return View(model);
+            }
+        }
 
     }
 }
