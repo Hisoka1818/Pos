@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Pos.Web.Data.Entities;
 
 namespace Pos.Web.Data
 {
@@ -8,5 +9,6 @@ namespace Pos.Web.Data
         {
             
         }
+        public DbSet<Categories> Categories { get; set; }
     }
 }
