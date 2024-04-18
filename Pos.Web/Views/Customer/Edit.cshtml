@@ -18,27 +18,27 @@
 <form asp-action="Update" method="post">
     <input type="hidden" asp-for="Id" />
     <div class="form-group">
-        <label class="form-label">Nombre</label>
+        <label asp-for="FirstName" class="control-label"></label>
         <input asp-for="FirstName" class="form-control" />
         <span asp-validation-for="FirstName" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Apellido</label>
+        <label asp-for="LastName" class="control-label"></label>
         <input asp-for="LastName" class="form-control" />
         <span asp-validation-for="LastName" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Numero de telefono</label>
+        <label asp-for="PhoneNumber" class="control-label"></label>
         <input asp-for="PhoneNumber" class="form-control" />
         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Email</label>
+        <label asp-for="EmailAddress" class="control-label"></label>
         <input asp-for="EmailAddress" class="form-control" />
         <span asp-validation-for="EmailAddress" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Tipo de cliente</label>
+        <label asp-for="CustomerType" class="control-label"></label>
         <select asp-for="CustomerType" class="form-control">
             <option value="">Seleccione...</option> <!-- Opción por defecto -->
             <option value="Nuevo">Nuevo</option>

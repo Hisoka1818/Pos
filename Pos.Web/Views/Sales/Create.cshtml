@@ -18,22 +18,22 @@
 <form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group">
-        <label class="form-label">Fecha y Hora</label>
+        <label asp-for="DateSales" class="control-label"></label>
         <input asp-for="DateSales" class="form-control" />
         <span asp-validation-for="DateSales" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Descuento</label>
+        <label asp-for="DiscountsSales" class="control-label"></label>
         <input asp-for="DiscountsSales" class="form-control" />
         <span asp-validation-for="DiscountsSales" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Valor total</label>
+        <label asp-for="TotalSales" class="control-label"></label>
         <input asp-for="TotalSales" class="form-control" />
         <span asp-validation-for="TotalSales" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Metodo de pago</label>
+        <label asp-for="PaymentMethod" class="control-label"></label>
         <select asp-for="PaymentMethod" class="form-control">
             <option value="">Seleccione...</option> <!-- Opción por defecto -->
             <option value="Efectivo">Efectivo</option>
@@ -45,7 +45,7 @@
         <span asp-validation-for="PaymentMethod" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Tipo de venta</label>
+        <label asp-for="SalesType" class="control-label"></label>
         <select asp-for="SalesType" class="form-control">
             <option value="">Seleccione...</option> <!-- Opción por defecto -->
             <option value="Venta al contado">Venta al contado</option>
@@ -57,7 +57,7 @@
         <span asp-validation-for="SalesType" class="text-danger"></span>
     </div>
     <div class="form-group">
-        <label class="form-label">Cliente</label>
+        <label asp-for="CustomerId" class="control-label"></label>
         <select asp-for="CustomerId" class="form-control" asp-items="Model.Customer"></select>
         <span asp-validation-for="CustomerId" class="text-danger"></span>
     </div>

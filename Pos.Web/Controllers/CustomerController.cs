@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Core;
+using Pos.Web.Core.Pagination;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
 
@@ -18,10 +19,22 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        //[CustomAuthorize(permission: "showSections", module: "Secciones")]
+        public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
+                                               [FromQuery] int? Page,
+                                               [FromQuery] string? Filter)
         {
-            Response<List<Customer>> response = await _customerService.GetListAsync();
+            PaginationRequest paginationRequest = new PaginationRequest
+            {
+                RecordsPerPage = RecordsPerPage ?? 5, //15
+                Page = Page ?? 1,
+                Filter = Filter,
+            };
+
+            Response<PaginationResponse<Customer>> response = await _customerService.GetListAsync(paginationRequest);
+
             return View(response.Result);
+
         }
 
         [HttpGet]

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
+using Pos.Web.Core.Pagination;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.Helpers;
@@ -9,7 +10,7 @@ namespace Pos.Web.Services
 {
     public interface ICustomerService
     {
-        public Task<Response<List<Customer>>> GetListAsync();
+        public Task<Response<PaginationResponse<Customer>>> GetListAsync(PaginationRequest request);
         public Task<Response<Customer>> CreateAsync(Customer model);
         public Task<Response<Customer>> GetOneAsync(int id);
         public Task<Response<Customer>> EditAsync(Customer model);
@@ -107,15 +108,38 @@ namespace Pos.Web.Services
                 }
             }
 
-            public async Task<Response<List<Customer>>> GetListAsync()
+            public async Task<Response<PaginationResponse<Customer>>> GetListAsync(PaginationRequest request)
             {
                 try
                 {
-                    List<Customer> list = await _context.Customer.ToListAsync();
-                    return ResponseHelper<List<Customer>>.MakeResponseSuccess(list, "Cliente obtenido con exito");    
-                }catch (Exception ex)
+                    IQueryable<Customer> queryable = _context.Customer.AsQueryable();
+
+                    //Ajustar en este momento se esta buscando por tipo de cliente
+                    if (!string.IsNullOrWhiteSpace(request.Filter))
+                    {
+                        queryable = queryable.Where(s => s.CustomerType.ToLower().Contains(request.Filter.ToLower()));
+                    }
+
+                    PagedList<Customer> list = await PagedList<Customer>.ToPagedListAsync(queryable, request);
+
+
+                    PaginationResponse<Customer> result = new PaginationResponse<Customer>
+                    {
+                        List = list,
+                        TotalCount = list.TotalCount,
+                        RecordsPerPage = list.RecordsPerPage,
+                        CurrentPage = list.CurrentPage,
+                        TotalPages = list.TotalPages,
+
+                        //Faltante:
+                        Filter = request.Filter,
+                    };
+
+                    return ResponseHelper<PaginationResponse<Customer>>.MakeResponseSuccess(result, "Clientes obtenidos con éxito");
+                }
+                catch (Exception ex)
                 {
-                    return ResponseHelper<List<Customer>>.MakeResponseFail(ex);
+                    return ResponseHelper<PaginationResponse<Customer>>.MakeResponseFail(ex);
                 }
             }
         }
