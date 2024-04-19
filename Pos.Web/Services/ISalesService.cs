@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
+using Pos.Web.Core.Pagination;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
@@ -11,7 +12,7 @@ namespace Pos.Web.Services
 {
     public interface ISalesService
     {
-        public Task<Response<List<Sales>>> GetListAsync();
+        public Task<Response<PaginationResponse<Sales>>> GetListAsync(PaginationRequest request);
 
         public Task<Response<Sales>> CreateAsync(SalesDTO model);
 
@@ -70,16 +71,40 @@ namespace Pos.Web.Services
                
             }
 
-            public async Task<Response<List<Sales>>> GetListAsync()
+            public async Task<Response<PaginationResponse<Sales>>> GetListAsync(PaginationRequest request)
             {
                 try
                 {
-                    List<Sales> list = await _context.Sales.Include(b => b.Customer).ToListAsync();
-                    return ResponseHelper<List<Sales>>.MakeResponseSuccess(list, "Venta obtenido con exito");
+                    IQueryable<Sales> queryable = _context.Sales.AsQueryable();
+                    //Inlcuyo al cliente
+                    List<Sales> customer = await _context.Sales.Include(b => b.Customer).ToListAsync();
+
+                    if (!string.IsNullOrWhiteSpace(request.Filter))
+                    {
+                        queryable = queryable.Where(s => s.SalesType.ToLower().Contains(request.Filter.ToLower()));
+                    }
+
+                    PagedList<Sales> list = await PagedList<Sales>.ToPagedListAsync(queryable, request);
+
+                    PaginationResponse<Sales> result = new PaginationResponse<Sales>
+                    {
+                        List = list,
+                        TotalCount = list.TotalCount,
+                        RecordsPerPage = list.RecordsPerPage,
+                        CurrentPage = list.CurrentPage,
+                        TotalPages = list.TotalPages,
+
+                        //Faltante:
+                        Filter = request.Filter,
+                    };
+
+                    return ResponseHelper<PaginationResponse<Sales>>.MakeResponseSuccess(result, "Venta obtenido con éxito");
+                    
+                    
                 }
                 catch (Exception ex)
                 {
-                    return ResponseHelper<List<Sales>>.MakeResponseFail(ex);
+                    return ResponseHelper<PaginationResponse<Sales>>.MakeResponseFail(ex);
                 }
             }
 

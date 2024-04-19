@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
+using Pos.Web.Core.Pagination;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
@@ -26,9 +27,19 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
+                                               [FromQuery] int? Page,
+                                               [FromQuery] string? Filter)
         {
-            Response<List<Sales>> response = await _salesService.GetListAsync();
+            PaginationRequest paginationRequest = new PaginationRequest
+            {
+                RecordsPerPage = RecordsPerPage ?? 5, //15
+                Page = Page ?? 1,
+                Filter = Filter,
+            };
+
+            Response<PaginationResponse<Sales>> response = await _salesService.GetListAsync(paginationRequest);
+
             return View(response.Result);
         }
 
