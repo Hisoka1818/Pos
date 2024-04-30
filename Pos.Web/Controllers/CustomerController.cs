@@ -1,12 +1,15 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Core;
+using Pos.Web.Core.Attributes;
 using Pos.Web.Core.Pagination;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
 
 namespace Pos.Web.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -19,7 +22,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        //[CustomAuthorize(permission: "showSections", module: "Secciones")]
+        [CustomAuthorize(permission: "showSupervisores", module: "Supervisores")] //Aqui pongo los que pueden entrar a ver esta entidad en este momento solo el supervisor pude hacerlo 
         public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
                                                [FromQuery] int? Page,
                                                [FromQuery] string? Filter)
