@@ -7,6 +7,7 @@ using Pos.Web.Core.Pagination;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
 
+
 namespace Pos.Web.Controllers
 {
     [Authorize]
@@ -22,7 +23,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        [CustomAuthorize(permission: "showSupervisores", module: "Supervisores")] //Aqui pongo los que pueden entrar a ver esta entidad en este momento solo el supervisor pude hacerlo 
+        [CustomAuthorize(permission: "showSupervisores" , module: "Supervisores")]//Aqui pongo los que pueden entrar a ver esta entidad en este momento solo el supervisor pude hacerlo 
         public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
                                                [FromQuery] int? Page,
                                                [FromQuery] string? Filter)
@@ -37,7 +38,6 @@ namespace Pos.Web.Controllers
             Response<PaginationResponse<Customer>> response = await _customerService.GetListAsync(paginationRequest);
 
             return View(response.Result);
-
         }
 
         [HttpGet]

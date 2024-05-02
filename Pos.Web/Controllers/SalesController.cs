@@ -1,5 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
-using Humanizer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +13,7 @@ using Pos.Web.Services;
 
 namespace Pos.Web.Controllers
 {
+    [Authorize]
     public class SalesController : Controller
     {
         private readonly DataContext _context;
