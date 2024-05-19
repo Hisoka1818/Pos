@@ -2,7 +2,7 @@
 
 namespace Pos.Web.Helpers
 {
-    public class ResponseHelper <T>
+    public class ResponseHelper<T>
     {
         public static Response<T> MakeResponseSuccess(T model)
         {

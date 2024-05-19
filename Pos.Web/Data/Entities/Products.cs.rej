@@ -1,9 +1,0 @@
-diff a/Pos.Web/Data/Entities/Products.cs b/Pos.Web/Data/Entities/Products.cs	(rejected hunks)
-@@ -17,6 +17,7 @@
-         public int CategoriesId { get; set; }
- 
-         //propiedades de navegación 
-+       
-         public  Categories Categories { get; set;}
- 
-     }

@@ -1,6 +1,6 @@
-﻿namespace Pos.Web.DTO
+﻿namespace Pos.Web.DTOs
 {
-    public class CategoriesDTO
+    public class CategoriesDTOs
     {
 
         public int Id { get; set; }

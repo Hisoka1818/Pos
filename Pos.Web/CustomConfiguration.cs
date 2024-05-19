@@ -3,7 +3,7 @@ using AspNetCoreHero.ToastNotification.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Pos.Web.Data;
 using Pos.Web.Services;
-using static Pos.Web.Services.IProductsService;
+using static Pos.Web.Services.IProductService;
 
 
 namespace Pos.Web
@@ -34,7 +34,7 @@ namespace Pos.Web
 
         private static void AddServices(this WebApplicationBuilder builder)
         {
-            builder.Services.AddScoped<IProductsService, ProductsService>();
+            builder.Services.AddScoped<IProductService, ProductsService>();
             
         }
 

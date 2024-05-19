@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
-using Pos.Web.DTO;
+using Pos.Web.DTOs;
 using Pos.Web.Services;
 using System.Linq.Expressions;
 
@@ -15,15 +15,15 @@ namespace Pos.Web.Controllers
 
 
 
-    public class ProductsController : Controller
+    public class ProductController : Controller
     {
         private readonly DataContext _context;
-        private readonly IProductsService _productsService;
+        private readonly IProductService _productService;
         private readonly INotyfService _notify;
 
-        public ProductsController(IProductsService productsService, INotyfService notify, DataContext context)
+        public ProductController(IProductService productService, INotyfService notify, DataContext context)
         {
-            _productsService = productsService;
+            _productService = productService;
             _notify = notify;
             _context = context;
         }
@@ -31,14 +31,14 @@ namespace Pos.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            Response<List<Products>> response = await _productsService.GetListAsync();
+            Response<List<Product>> response = await _productService.GetListAsync();
             return View(response.Result);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ProductsDTO productsDTO = new ProductsDTO
+            ProductDTOs productDTOs = new ProductDTOs
             {
                 Categories = await _context.Categories.Select(a => new SelectListItem
                 {
@@ -46,11 +46,11 @@ namespace Pos.Web.Controllers
                     Value = a.Id.ToString(),
                 }).ToArrayAsync(),
             };
-            return View(productsDTO);
+            return View(productDTOs);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ProductsDTO model)
+        public async Task<IActionResult> Create(ProductDTOs model)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace Pos.Web.Controllers
                     return View(model);
                 }
 
-                Response<Products> response = await _productsService.CreateAsync(model);
+                Response<Product> response = await _productService.CreateAsync(model);
 
                 if (response.IsSuccess)
                 {
@@ -80,29 +80,29 @@ namespace Pos.Web.Controllers
         }
 
 
-        
+
 
         [HttpGet]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
             try
             {
-                Products? products = await _context.Products.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
+                Product? product = await _context.Product.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
 
-                if (products is null)
+                if (product is null)
                 {
 
                     return RedirectToAction(nameof(Index));
                 }
 
-                ProductsDTO productsDTO = new ProductsDTO
+                ProductDTOs productDTOs = new ProductDTOs
                 {
                     Id = id,
-                    CategoriesId = products.CategoriesId,
-                    Name = products.Name,
-                    price = products.price,
-                    reference = products.reference,
-                    area = products.area,
+                    CategoriesId = product.CategoriesId,
+                    Name = product.Name,
+                    price = product.price,
+                    reference = product.reference,
+                    area = product.area,
                     Categories = await _context.Categories.Select(a => new SelectListItem
 
                     {
@@ -111,7 +111,7 @@ namespace Pos.Web.Controllers
                     }).ToArrayAsync(),
                 };
 
-                return View(productsDTO);
+                return View(productDTOs);
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(ProductsDTO model)
+        public async Task<IActionResult> Update(ProductDTOs model)
         {
             try
             {
@@ -134,14 +134,14 @@ namespace Pos.Web.Controllers
                     }).ToArrayAsync();
                     return View(model);
                 }
-                Products sales = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
+                Product sales = await _context.Product.FirstOrDefaultAsync(a => a.Id == model.Id);
 
                 if (sales is null)
                 {
                     return NotFound();
                 }
 
-                Response<Products> response = await _productsService.UpdateAsync(model);
+                Response<Product> response = await _productService.UpdateAsync(model);
 
                 if (response.IsSuccess)
                 {
@@ -160,18 +160,18 @@ namespace Pos.Web.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Delete(CategoriesDTO model, [FromRoute] int id)
+        public async Task<IActionResult> Delete(CategoriesDTOs model, [FromRoute] int id)
         {
             try
             {
-                Products products = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
+                Product product = await _context.Product.FirstOrDefaultAsync(a => a.Id == id);
 
-                if (products is null)
+                if (product is null)
                 {
                     return RedirectToAction(nameof(Index));
                 }
 
-                Response<Products> response = await _productsService.DeleteAsync( id);
+                Response<Product> response = await _productService.DeleteAsync(id);
 
 
                 if (response.IsSuccess)
