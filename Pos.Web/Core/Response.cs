@@ -1,4 +1,4 @@
-﻿namespace Pos.Web.Core
+namespace Pos.Web.Core
 {
     public class Response<T>
     {
@@ -9,6 +9,5 @@
         public List<string> Errors { get; set; }
 
         public T Result { get; set; }
-
     }
 }

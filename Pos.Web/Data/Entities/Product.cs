@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Pos.Web.Data.Entities
 {
@@ -22,3 +22,4 @@ namespace Pos.Web.Data.Entities
 
     }
 }
+        public List<SalesDetail> SalesDetails { get; set; }

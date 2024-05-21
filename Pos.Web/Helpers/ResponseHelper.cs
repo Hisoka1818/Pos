@@ -1,4 +1,4 @@
-﻿using Pos.Web.Core;
+using Pos.Web.Core;
 
 namespace Pos.Web.Helpers
 {
@@ -82,7 +82,5 @@ namespace Pos.Web.Helpers
                 Errors = errors
             };
         }
-
-
     }
 }
