@@ -10,6 +10,7 @@ using static Pos.Web.Services.ICategoriesService;
 using static Pos.Web.Services.IProductService;
 using Microsoft.AspNetCore.Identity;
 using Pos.Web.Data.Entities;
+using Pos.Web.Helpers;
 
 
 namespace Pos.Web
@@ -70,6 +71,7 @@ namespace Pos.Web
 
         private static void AddServices(this WebApplicationBuilder builder)
         {
+            // Services
             //builder.Services.AddScoped<IRolesService, RolesService>();
             builder.Services.AddScoped<ISalesService, SalesService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
@@ -77,6 +79,9 @@ namespace Pos.Web
             builder.Services.AddScoped<IProductService, ProductsService>();
             builder.Services.AddTransient<SeedDb>();
             builder.Services.AddScoped<IUsersService, UsersService>();
+
+            //Helper
+            builder.Services.AddScoped<IConverterHelper, ConverterHelper>();
         }
 
         public static WebApplication AddCustomConfiguration(this WebApplication app)

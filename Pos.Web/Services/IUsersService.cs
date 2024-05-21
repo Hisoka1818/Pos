@@ -13,7 +13,7 @@ namespace Pos.Web.Services
     {
         Task<IdentityResult> AddUserAsync(User user, string password);
 
-        //Task<bool> CheckPasswordAsync(User user, string password);
+        Task<bool> CheckPasswordAsync(User user, string password);
 
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
 
@@ -21,7 +21,7 @@ namespace Pos.Web.Services
 
         Task<string> GenerateEmailConfirmationTokenAsync(User user);
 
-        //Task<string> GeneratePasswordResetTokenAsync(User user);
+        Task<string> GeneratePasswordResetTokenAsync(User user);
 
         Task<User> GetUserAsync(string email);
 
@@ -29,9 +29,9 @@ namespace Pos.Web.Services
 
         Task LogoutAsync();
 
-        //Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword);
+        Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword);
 
-        //Task<IdentityResult> UpdateUserAsync(User user);
+        Task<IdentityResult> UpdateUserAsync(User user);
     }
 
     public class UsersService : IUsersService
@@ -57,10 +57,10 @@ namespace Pos.Web.Services
             return await _userManager.CreateAsync(user, password);
         }
 
-        //public Task<bool> CheckPasswordAsync(User user, string password)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public Task<bool> CheckPasswordAsync(User user, string password)
+        {
+            return _userManager.CheckPasswordAsync(user, password);
+        }
 
         public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
         {
@@ -105,10 +105,10 @@ namespace Pos.Web.Services
             return await _userManager.GenerateEmailConfirmationTokenAsync(user);
         }
 
-        //public Task<string> GeneratePasswordResetTokenAsync(User user)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<string> GeneratePasswordResetTokenAsync(User user)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
+        }
 
         public async Task<User> GetUserAsync(string email)
         {
@@ -127,14 +127,14 @@ namespace Pos.Web.Services
             await _signInManager.SignOutAsync();
         }
 
-        //public Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword)
+        {
+            return await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+        }
 
-        //public Task<IdentityResult> UpdateUserAsync(User user)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task<IdentityResult> UpdateUserAsync(User user)
+        {
+            return await _userManager.UpdateAsync(user);
+        }
     }
 }

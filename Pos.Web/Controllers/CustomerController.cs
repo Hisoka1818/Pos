@@ -23,7 +23,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        [CustomAuthorize(permission: "showSupervisores" , module: "Supervisores")]//Aqui pongo los que pueden entrar a ver esta entidad en este momento solo el supervisor pude hacerlo 
+        [CustomAuthorize(permission: "showEmployees", module: "Empleados")]//Aqui pongo los que pueden entrar a ver esta entidad en este momento solo el supervisor pude hacerlo 
         public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
                                                [FromQuery] int? Page,
                                                [FromQuery] string? Filter)
@@ -41,12 +41,14 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize(permission: "createEmployees", module: "Empleados")]
         public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [CustomAuthorize(permission: "createEmployees", module: "Empleados")]
         public async Task<IActionResult> Create(Customer model)
         {
             try
@@ -77,6 +79,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize(permission: "updateEmployees", module: "Empleados")]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
             Response<Customer> response = await _customerService.GetOneAsync(id);
@@ -92,6 +95,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpPost]
+        [CustomAuthorize(permission: "updateEmployees", module: "Empleados")]
         public async Task<IActionResult> Update(Customer model)
         {
             try
@@ -122,6 +126,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpPost]
+        [CustomAuthorize(permission: "deleteEmployees", module: "Empleados")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             Response<Customer> response = await _customerService.DeleteAsync(id);
