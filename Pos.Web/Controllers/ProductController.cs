@@ -42,7 +42,7 @@ namespace Pos.Web.Controllers
             {
                 Categories = await _context.Categories.Select(a => new SelectListItem
                 {
-                    Text = a.Name,
+                    Text = a.categoryName,
                     Value = a.Id.ToString(),
                 }).ToArrayAsync(),
             };
@@ -87,7 +87,7 @@ namespace Pos.Web.Controllers
         {
             try
             {
-                Product? product = await _context.Product.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
+                Product? product = await _context.Products.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
 
                 if (product is null)
                 {
@@ -106,7 +106,7 @@ namespace Pos.Web.Controllers
                     Categories = await _context.Categories.Select(a => new SelectListItem
 
                     {
-                        Text = a.Name,
+                        Text = a.categoryName,
                         Value = a.Id.ToString(),
                     }).ToArrayAsync(),
                 };
@@ -129,12 +129,12 @@ namespace Pos.Web.Controllers
                 {
                     model.Categories = await _context.Categories.Select(a => new SelectListItem
                     {
-                        Text = a.Name,
+                        Text = a.categoryName,
                         Value = a.Id.ToString(),
                     }).ToArrayAsync();
                     return View(model);
                 }
-                Product sales = await _context.Product.FirstOrDefaultAsync(a => a.Id == model.Id);
+                Product sales = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
 
                 if (sales is null)
                 {
@@ -164,7 +164,7 @@ namespace Pos.Web.Controllers
         {
             try
             {
-                Product product = await _context.Product.FirstOrDefaultAsync(a => a.Id == id);
+                Product product = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
 
                 if (product is null)
                 {

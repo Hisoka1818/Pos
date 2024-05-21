@@ -57,7 +57,7 @@ namespace Pos.Web.Services
             {
                 try
                 {
-                    List<Product> list = await _context.Product.Include(b => b.Categories).ToListAsync();
+                    List<Product> list = await _context.Products.Include(b => b.Categories).ToListAsync();
                     return ResponseHelper<List<Product>>.MakeResponseSuccess(list, "Producto obtenido con exito");
                 }
                 catch (Exception ex)
@@ -71,7 +71,7 @@ namespace Pos.Web.Services
 
                 try
                 {
-                    Product product = await _context.Product.FirstOrDefaultAsync(a => a.Id == model.Id);
+                    Product product = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
 
                     product.Name = model.Name;
                     product.price = model.price;
@@ -81,7 +81,7 @@ namespace Pos.Web.Services
 
 
 
-                    _context.Product.Update(product);
+                    _context.Products.Update(product);
                     await _context.SaveChangesAsync();
 
 
@@ -97,8 +97,8 @@ namespace Pos.Web.Services
             {
                 try
                 {
-                    Product product = await _context.Product.FirstOrDefaultAsync(a => a.Id == id);
-                    _context.Product.Remove(product);
+                    Product product = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
+                    _context.Products.Remove(product);
                     await _context.SaveChangesAsync();
 
                     return ResponseHelper<Product>.MakeResponseSuccess(product, "Producto eliminada con exito");

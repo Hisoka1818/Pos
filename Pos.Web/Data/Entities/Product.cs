@@ -19,7 +19,8 @@ namespace Pos.Web.Data.Entities
         //propiedades de navegación 
 
         public Categories Categories { get; set; }
+        public List<SalesDetail> SalesDetails { get; set; }
 
     }
 }
-        public List<SalesDetail> SalesDetails { get; set; }
+        
