@@ -1,15 +1,25 @@
-﻿@model IEnumerable<Pos.Web.DTOs.ProductDTOs>
+﻿@model IEnumerable<Pos.Web.Data.Entities.Product>
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
 
-<h1>Index</h1>
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Productos</li>
+        </ol>
+    </nav>
+</div>
 
 <p>
-    
-    <a class="btn btn-info" asp-action="Create">Crear Producto Nuevo</a>
+    <a class="btn btn-info" asp-action="Create">Nuevo producto</a>
 </p>
+
+
 <table class="table">
     <thead>
         <tr>
@@ -46,26 +56,27 @@
             <td>
                 @Html.DisplayFor(modelItem => item.area)
             </td>
-            <td>
-                    @if(item.Categories != null)
+                <td>
+                    @if (item.Categories != null)
                     {
-                        @item.Categories.categoryName
+                        @item.Categories.categoryName @Html.Raw("&nbsp;")
                     }
                     else
                     {
-                        <text>Categoria no asignada</text>
+                        <text>Producto no asignado</text>
                     }
                 </td>
             <td>
-                    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                    <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
+                <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
                         <button class="btn btn-danger btnDelete">Eliminar</button>
-                    </form>
+                </form>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
 @section Scripts {
     <script>
 
@@ -76,8 +87,8 @@
                 event.preventDefault();
 
                 Swal.fire({
-                    title: "Esta por eliminar un producto",
-                    text: "No se puede recuperar",
+                    title: "¿Desea eliminar la categoria?",
+                    text: "No prodrá revertirlo",
                     icon: "question",
                     showCancelButton: true,
                 }).then((result) => {
@@ -94,8 +105,6 @@
             });
 
         });
-
-      
 
     </script>
 }
