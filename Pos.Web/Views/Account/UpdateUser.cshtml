@@ -1,0 +1,93 @@
+﻿@model Pos.Web.DTOs.AccountUserDTO
+
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Editar Usuario</li>
+        </ol>
+    </nav>
+</div>
+
+
+<section class="section dashboard">
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class=" row">
+                <h3 class="m-0 font-weight-bold text-primary col-md-11">Editar Usuario</h3>
+            </div>
+        </div>
+
+
+        <div class="card-body">
+
+            <form class="user" asp-action="UpdateUser" method="POST">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Email" />
+
+                <div class="row mb-3">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input value="@Model.Email" class="form-control form-control-user1" readonly disabled>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Document" class="control-label"></label>
+                            <input asp-for="Document" class="form-control form-control-user1" placeholder="Documento de identidad">
+                            <span asp-validation-for="Document" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control form-control-user1" placeholder="Nombres">
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control form-control-user1" placeholder="Apellidos">
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="control-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control form-control-user1" placeholder="Teléfono">
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a class="btn btn-warning" asp-action="ChangePassword">Cambiar Contraseña</a>
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

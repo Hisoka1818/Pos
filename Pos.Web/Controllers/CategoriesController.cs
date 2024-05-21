@@ -25,7 +25,7 @@ namespace Pos.Web.Controllers
             Response<List<Categories>> response = await _categoriesServices.GetListAsync();
             return View(response.Result);
         }
-        [HttpGet]
+        [HttpGet] 
         public ActionResult Create()
         {
             return View();

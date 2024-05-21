@@ -4,21 +4,22 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
+using Pos.Web.Helpers;
 using Pos.Web.Services;
 
 namespace Pos.Web.Controllers
 {
     public class AccountController : Controller
     {
-        //private readonly IConverterHelper _converterHelper;
+        private readonly IConverterHelper _converterHelper;
         private readonly INotyfService _noty;
         private readonly IUsersService _usersService;
 
-        public AccountController(IUsersService usersService, INotyfService noty) //IConverterHelper converterHelper
+        public AccountController(IUsersService usersService, INotyfService noty, IConverterHelper converterHelper)
         {
             _usersService = usersService;
             _noty = noty;
-            //_converterHelper = converterHelper;
+            _converterHelper = converterHelper;
         }
 
         [HttpGet]
@@ -63,84 +64,84 @@ namespace Pos.Web.Controllers
             return View();
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> UpdateUser()
-        //{
-        //    User? user = await _usersService.GetUserAsync(User.Identity.Name);
+        [HttpGet]
+        public async Task<IActionResult> UpdateUser()
+        {
+            User? user = await _usersService.GetUserAsync(User.Identity.Name);
 
-        //    if (user is null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (user is null)
+            {
+                return NotFound();
+            }
 
-        //    AccountUserDTO dto = _converterHelper.ToAccountDTO(user);
+            AccountUserDTO dto = _converterHelper.ToAccountDTO(user);
 
-        //    return View(dto);
-        //}
+            return View(dto);
+        }
 
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<IActionResult> UpdateUser(AccountUserDTO dto)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        User user = await _usersService.GetUserAsync(User.Identity.Name);
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser(AccountUserDTO dto)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await _usersService.GetUserAsync(User.Identity.Name);
 
-        //        user.Document = dto.Document;
-        //        user.FirstName = dto.FirstName;
-        //        user.LastName = dto.LastName;
-        //        user.PhoneNumber = dto.PhoneNumber;
+                user.Document = dto.Document;
+                user.FirstName = dto.FirstName;
+                user.LastName = dto.LastName;
+                user.PhoneNumber = dto.PhoneNumber;
 
-        //        await _usersService.UpdateUserAsync(user);
+                await _usersService.UpdateUserAsync(user);
 
-        //        _noty.Success("Usuario editado con éxito");
+                _noty.Success("Usuario editado con éxito");
 
-        //        return RedirectToAction("Dashboard", "Home");
-        //    }
+                return RedirectToAction("Dashboard", "Home");
+            }
 
-        //    _noty.Error("Debe ajustar los errores de validación.");
-        //    return View(dto);
-        //}
+            _noty.Error("Debe ajustar los errores de validación.");
+            return View(dto);
+        }
 
-        //[HttpGet]
-        //[Authorize]
-        //public IActionResult ChangePassword()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
 
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<IActionResult> ChangePassword(ChangePasswordDTO dto)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        User user = await _usersService.GetUserAsync(User.Identity.Name);
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO dto)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await _usersService.GetUserAsync(User.Identity.Name);
 
-        //        bool isCorrectPassword = await _usersService.CheckPasswordAsync(user, dto.CurrentPassword);
+                bool isCorrectPassword = await _usersService.CheckPasswordAsync(user, dto.CurrentPassword);
 
-        //        if (!isCorrectPassword)
-        //        {
-        //            _noty.Error("Contraseña incorrecta");
-        //            return View();
-        //        }
+                if (!isCorrectPassword)
+                {
+                    _noty.Error("Contraseña incorrecta");
+                    return View();
+                }
 
-        //        string restToken = await _usersService.GeneratePasswordResetTokenAsync(user);
-        //        IdentityResult result = await _usersService.ResetPasswordAsync(user, restToken, dto.NewPassword);
+                string restToken = await _usersService.GeneratePasswordResetTokenAsync(user);
+                IdentityResult result = await _usersService.ResetPasswordAsync(user, restToken, dto.NewPassword);
 
-        //        if (result.Succeeded)
-        //        {
-        //            _noty.Success("Contraseña actualizada con éxito");
-        //            return RedirectToAction("Dashboard", "Home");
-        //        }
+                if (result.Succeeded)
+                {
+                    _noty.Success("Contraseña actualizada con éxito");
+                    return RedirectToAction("Dashboard", "Home");
+                }
 
-        //        _noty.Error("Ha ocurriso un error, intentole nuevamente");
-        //        return View();
-        //    }
+                _noty.Error("Ha ocurriso un error, intentole nuevamente");
+                return View();
+            }
 
-        //    _noty.Error("Debe ajustar los errores de validación");
-        //    return View();
-        //}
+            _noty.Error("Debe ajustar los errores de validación");
+            return View();
+        }
     }
 }
 
