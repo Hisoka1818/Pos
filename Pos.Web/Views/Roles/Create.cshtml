@@ -1,0 +1,99 @@
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/View/Shared/_MyLayout.cshtml";
+}
+
+<div class="pagetitle">
+    <h1>Dashboard</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Roles</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard">
+    @*Rol*@
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Nuevo Rol</h3>
+
+            <form class="row g-3" asp-action="Create" method="post" id="frmCreate">
+                <input type="hidden" id="permissionIds" name="PermissionIds"/>
+
+                <div class="col-md-12">
+                    <div class
+    using Pos.Web.Data.Entities;
+                       <input asp-for="Name"class="form-control" placeholder="@Html.DisplayFor(model=>model.Name)">
+                        <label>@(Html.DisplayNameFor(Model =>model.Name))</label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+    @*Permisos*@
+    <div class="card shadow mb-4">
+        <div class="card-body">
+
+            <h3 class="card-title">Permisos</h3>
+            <div class="row">
+                @foreach (var module in Model.Permissions.GroupBy(obj => obj.module))
+                {
+                    <div class="col-md-3 mt-3">
+                        <h5>@module.Key</h5>
+
+                    @foreach(var permission in module)
+                    {
+                        <div class="form-check form-switch">
+                            <input class="form-check-input permission"
+                                type="checkbox"
+                                data-permission-id="@permission.Id"
+                                id="permission_@permission.Id"
+                                @(permission.selected ? "checked" : "")>
+                            <label class="form-check-label" for="permission_@permission.Id">@permission.Description</label>
+                        </div>
+                    }
+            </div>
+            }
+        </div>
+    </div>
+
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary" form="frmCreate" id="btnSave">Guardar</button>
+        <a asp-action="Index" class="btn btn-secundary">Volver</a>
+    </div>
+
+</section>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+
+        $(document).ready(function(){
+
+            $("#btnSave").click(function(event){
+
+                const permissions = $('.permission:checked');
+
+                let permissionIds = [];
+
+                permissions.each(function() {
+
+                    const permissionId = $(this).data('permission-id');
+                    permissionIds.push(permissionId);
+                });
+
+                $('#permissionIds').val(JSON.stringify(permissionIds)));
+
+            });
+
+        });
+
+    </script>
+}

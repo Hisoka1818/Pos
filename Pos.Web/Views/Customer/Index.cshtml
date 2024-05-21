@@ -1,5 +1,7 @@
 ﻿@model PaginationResponse<Pos.Web.Data.Entities.Customer>
 
+@inject Pos.Web.Services.IUsersService _userService
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_MyLayout.cshtml";
