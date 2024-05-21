@@ -24,11 +24,11 @@ namespace Pos.Web.Data.Seeders
 
         private async Task AdministradorRoleAsync()
         {
-            PrivatePosRole? tmp = await _context.PrivatePosRoles.Where(ir => ir.Name == "Administrador").FirstOrDefaultAsync();
+            PrivatePosRole? tmp = await _context.PrivatePosRoles.Where(ir => ir.Name == Constants.SUPER_ADMIN_ROLE_NAME).FirstOrDefaultAsync();
 
             if (tmp == null)
             {
-                PrivatePosRole role = new PrivatePosRole { Name = "Administrador" };
+                PrivatePosRole role = new PrivatePosRole { Name = Constants.SUPER_ADMIN_ROLE_NAME };
                 _context.PrivatePosRoles.Add(role);
                 await _context.SaveChangesAsync();
             }

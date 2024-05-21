@@ -59,7 +59,7 @@ namespace Pos.Web
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.Cookie.Name = "Auth";
-                options.LoginPath = "/Account/Login"; // Ruta de inicio de sesión
+                options.LoginPath = "/Account/Login"; // Ruta de inicio de sesiï¿½n
                 options.AccessDeniedPath = "/Account/NotAuthorized"; // Ruta de acceso denegado
             });
 
@@ -69,6 +69,7 @@ namespace Pos.Web
         private static void AddServices(this WebApplicationBuilder builder)
         {
             //builder.Services.AddScoped<IRolesService, RolesService>();
+            builder.Services.AddScoped<IRolesService, RolesService>();
             builder.Services.AddScoped<ISalesService, SalesService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<ICategoriesService, CategoriesService>();
