@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Core;
+using Pos.Web.Core.Pagination;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
+using static Pos.Web.Services.ICustomerService;
 
 namespace Pos.Web.Controllers
 {
@@ -20,9 +22,18 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
+                                               [FromQuery] int? Page,
+                                               [FromQuery] string? Filter)
         {
-            Response<List<Categories>> response = await _categoriesServices.GetListAsync();
+            PaginationRequest paginationRequest = new PaginationRequest
+            {
+                RecordsPerPage = RecordsPerPage ?? 5, //15
+                Page = Page ?? 1,
+                Filter = Filter,
+            };
+
+            Response<PaginationResponse<Categories>> response = await _categoriesServices.GetListAsync(paginationRequest);
             return View(response.Result);
         }
         [HttpGet] 

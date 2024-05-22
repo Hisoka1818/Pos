@@ -1,4 +1,4 @@
-﻿using Pos.Web.Services;
+using Pos.Web.Services;
 using System.Reflection.PortableExecutable;
 
 namespace Pos.Web.Data.Seeders
@@ -20,6 +20,7 @@ namespace Pos.Web.Data.Seeders
             await new SalesSeeder(_context).SeedAsync();
             await new PermissionSeeder(_context).SeedAsync();
             await new UserRoleSeeder(_usersService, _context).SeedAsync();
+            await new CategoriesSeeder(_context).SeedAsync();
         }
     }
 }
