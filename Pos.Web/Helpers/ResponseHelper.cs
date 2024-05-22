@@ -1,4 +1,4 @@
-﻿using Pos.Web.Core;
+using Pos.Web.Core;
 
 namespace Pos.Web.Helpers
 {

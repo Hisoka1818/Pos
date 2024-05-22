@@ -1,4 +1,4 @@
-﻿namespace Pos.Web.Core
+namespace Pos.Web.Core
 {
     public class Response<T>
     {

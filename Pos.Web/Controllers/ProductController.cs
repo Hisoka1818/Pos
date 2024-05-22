@@ -1,10 +1,8 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
-using Pos.Web.Core.Pagination;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
@@ -13,53 +11,43 @@ using Pos.Web.Services;
 
 namespace Pos.Web.Controllers
 {
-    [Authorize]
-    public class SalesController : Controller
+
+    public class ProductController : Controller
     {
         private readonly DataContext _context;
-        private readonly ISalesService _salesService;
+        private readonly IProductService _productService;
         private readonly INotyfService _notify;
 
-        public SalesController(ISalesService salesService, INotyfService notify, DataContext context)
+        public ProductController(IProductService productService, INotyfService notify, DataContext context)
         {
-            _salesService = salesService;
+            _productService = productService;
             _notify = notify;
             _context = context;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
-                                               [FromQuery] int? Page,
-                                               [FromQuery] string? Filter)
+        public async Task<IActionResult> Index()
         {
-            PaginationRequest paginationRequest = new PaginationRequest
-            {
-                RecordsPerPage = RecordsPerPage ?? 5, //15
-                Page = Page ?? 1,
-                Filter = Filter,
-            };
-
-            Response<PaginationResponse<Sales>> response = await _salesService.GetListAsync(paginationRequest);
-
+            Response<List<Product>> response = await _productService.GetListAsync();
             return View(response.Result);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            SalesDTO salesDTO = new SalesDTO
+            ProductDTOs productDTOs = new ProductDTOs
             {
-                Customer = await _context.Customer.Select(a => new SelectListItem
+                Categories = await _context.Categories.Select(a => new SelectListItem
                 {
-                    Text = a.FirstName,
+                    Text = a.categoryName,
                     Value = a.Id.ToString(),
                 }).ToArrayAsync(),
             };
-            return View(salesDTO);
+            return View(productDTOs);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(SalesDTO model)
+        public async Task<IActionResult> Create(ProductDTOs model)
         {
             try
             {
@@ -68,8 +56,8 @@ namespace Pos.Web.Controllers
                     _notify.Error("Debe ajustar los errores de validación.");
                     return View(model);
                 }
-                
-                Response<Sales> response = await _salesService.CreateAsync(model);
+
+                Response<Product> response = await _productService.CreateAsync(model);
 
                 if (response.IsSuccess)
                 {
@@ -87,66 +75,70 @@ namespace Pos.Web.Controllers
                 return View(model);
             }
         }
+
+
+
 
         [HttpGet]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
             try
             {
-                Sales? sales = await _context.Sales.Include(b => b.Customer).FirstOrDefaultAsync(b => b.Id == id);
+                Product? product = await _context.Products.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
 
-                if (sales is null)
+                if (product is null)
                 {
+
                     return RedirectToAction(nameof(Index));
                 }
 
-                SalesDTO salesDTO = new SalesDTO
+                ProductDTOs productDTOs = new ProductDTOs
                 {
                     Id = id,
-                    CustomerId = sales.CustomerId,
-                    DateSales = sales.DateSales,
-                    SalesType = sales.SalesType,
-                    PaymentMethod = sales.PaymentMethod,
-                    DiscountsSales = sales.DiscountsSales,
-                    TotalSales = sales.TotalSales,
-                    Customer = await _context.Customer.Select(a => new SelectListItem
+                    CategoriesId = product.CategoriesId,
+                    Name = product.Name,
+                    price = product.price,
+                    reference = product.reference,
+                    area = product.area,
+                    Categories = await _context.Categories.Select(a => new SelectListItem
+
                     {
-                        Text = a.FirstName,
+                        Text = a.categoryName,
                         Value = a.Id.ToString(),
                     }).ToArrayAsync(),
-
                 };
 
-                return View(salesDTO);
+                return View(productDTOs);
             }
             catch (Exception ex)
             {
                 return RedirectToAction(nameof(Index));
             }
+
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(SalesDTO model)
+        public async Task<IActionResult> Update(ProductDTOs model)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    model.Customer = await _context.Customer.Select(a => new SelectListItem
+                    model.Categories = await _context.Categories.Select(a => new SelectListItem
                     {
-                        Text = a.FirstName,
+                        Text = a.categoryName,
                         Value = a.Id.ToString(),
                     }).ToArrayAsync();
                     return View(model);
                 }
-                Sales sales = await _context.Sales.FirstOrDefaultAsync(a => a.Id == model.Id);
+                Product sales = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
 
                 if (sales is null)
                 {
                     return NotFound();
                 }
 
-                Response<Sales> response = await _salesService.UpdateAsync(model);
+                Response<Product> response = await _productService.UpdateAsync(model);
 
                 if (response.IsSuccess)
                 {
@@ -164,20 +156,21 @@ namespace Pos.Web.Controllers
                 return View(model);
             }
         }
-
         [HttpPost]
-        public async Task<IActionResult> Delete(CustomerDTO model, [FromRoute] int id)
+        public async Task<IActionResult> Delete(CategoriesDTOs model, [FromRoute] int id)
         {
             try
             {
-                Sales sales = await _context.Sales.FirstOrDefaultAsync(a => a.Id == id);
+                Product product = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
 
-                if (sales is null)
+                if (product is null)
                 {
                     return RedirectToAction(nameof(Index));
                 }
 
-                Response<Sales> response = await _salesService.DeleteAsync(id);
+                Response<Product> response = await _productService.DeleteAsync(id);
+
+
                 if (response.IsSuccess)
                 {
                     _notify.Success(response.Message);
@@ -193,6 +186,6 @@ namespace Pos.Web.Controllers
                 return View(model);
             }
         }
-    }
 
+    }
 }

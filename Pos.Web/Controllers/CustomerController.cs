@@ -1,12 +1,16 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Core;
+using Pos.Web.Core.Attributes;
 using Pos.Web.Core.Pagination;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
 
+
 namespace Pos.Web.Controllers
 {
+    [Authorize]
     public class CustomerController : Controller
     {
         private readonly ICustomerService _customerService;
@@ -19,7 +23,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        //[CustomAuthorize(permission: "showSections", module: "Secciones")]
+        [CustomAuthorize(permission: "showEmployees", module: "Empleados")]//Aqui pongo los que pueden entrar a ver esta entidad en este momento solo el supervisor pude hacerlo 
         public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
                                                [FromQuery] int? Page,
                                                [FromQuery] string? Filter)
@@ -34,16 +38,17 @@ namespace Pos.Web.Controllers
             Response<PaginationResponse<Customer>> response = await _customerService.GetListAsync(paginationRequest);
 
             return View(response.Result);
-
         }
 
         [HttpGet]
+        [CustomAuthorize(permission: "createEmployees", module: "Empleados")]
         public ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [CustomAuthorize(permission: "createEmployees", module: "Empleados")]
         public async Task<IActionResult> Create(Customer model)
         {
             try
@@ -74,6 +79,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
+        [CustomAuthorize(permission: "updateEmployees", module: "Empleados")]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
             Response<Customer> response = await _customerService.GetOneAsync(id);
@@ -89,6 +95,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpPost]
+        [CustomAuthorize(permission: "updateEmployees", module: "Empleados")]
         public async Task<IActionResult> Update(Customer model)
         {
             try
@@ -119,6 +126,7 @@ namespace Pos.Web.Controllers
         }
 
         [HttpPost]
+        [CustomAuthorize(permission: "deleteEmployees", module: "Empleados")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             Response<Customer> response = await _customerService.DeleteAsync(id);

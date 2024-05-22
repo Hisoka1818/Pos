@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Core;
 using Pos.Web.Data.Entities;
@@ -6,6 +7,7 @@ using Pos.Web.Services;
 
 namespace Pos.Web.Controllers
 {
+    [Authorize]
     public class CategoriesController : Controller
     {
         private readonly ICategoriesService _categoriesServices;
@@ -23,7 +25,7 @@ namespace Pos.Web.Controllers
             Response<List<Categories>> response = await _categoriesServices.GetListAsync();
             return View(response.Result);
         }
-        [HttpGet]
+        [HttpGet] 
         public ActionResult Create()
         {
             return View();
