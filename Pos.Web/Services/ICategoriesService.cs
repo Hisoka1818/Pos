@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core;
+using Pos.Web.Core.Pagination;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.Helpers;
@@ -9,6 +10,7 @@ namespace Pos.Web.Services
 {
     public interface ICategoriesService
     {
+        public Task<Response<PaginationResponse<Categories>>> GetListAsync(PaginationRequest request);
         public Task<Response<List<Categories>>> GetListAsync();
         public Task<Response<Categories>> CreateAsync(Categories model);
         public Task<Response<Categories>> GetOneAsync(int id);
@@ -95,6 +97,41 @@ namespace Pos.Web.Services
                 catch (Exception ex)
                 {
                     return ResponseHelper<List<Categories>>.MakeResponseFail(ex);
+                }
+            }
+
+            public async Task<Response<PaginationResponse<Categories>>> GetListAsync(PaginationRequest request)
+            {
+                try
+                {
+                    IQueryable<Categories> queryable = _context.Categories.AsQueryable();
+
+                    //Ajustar en este momento se esta buscando por tipo de cliente
+                    if (!string.IsNullOrWhiteSpace(request.Filter))
+                    {
+                        queryable = queryable.Where(s => s.categoryName.ToLower().Contains(request.Filter.ToLower()));
+                    }
+
+                    PagedList<Categories> list = await PagedList<Categories>.ToPagedListAsync(queryable, request);
+
+
+                    PaginationResponse<Categories> result = new PaginationResponse<Categories>
+                    {
+                        List = list,
+                        TotalCount = list.TotalCount,
+                        RecordsPerPage = list.RecordsPerPage,
+                        CurrentPage = list.CurrentPage,
+                        TotalPages = list.TotalPages,
+
+                        //Faltante:
+                        Filter = request.Filter,
+                    };
+
+                    return ResponseHelper<PaginationResponse<Categories>>.MakeResponseSuccess(result, "Clientes obtenidos con éxito");
+                }
+                catch (Exception ex)
+                {
+                    return ResponseHelper<PaginationResponse<Categories>>.MakeResponseFail(ex);
                 }
             }
 
