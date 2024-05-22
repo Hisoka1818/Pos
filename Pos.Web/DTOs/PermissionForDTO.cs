@@ -1,6 +1,6 @@
 using Pos.Web.Data.Entities;
 
-namespace PrivatePos.Web.DTOs
+namespace Pos.Web.DTOs
 {
     public class PermissionForDTO : Permission
     {

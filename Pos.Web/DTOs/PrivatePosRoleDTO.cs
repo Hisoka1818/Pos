@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace PrivatePos.Web.DTOs
+namespace Pos.Web.DTOs
 {
     public class PrivatePosRoleDTO
     {

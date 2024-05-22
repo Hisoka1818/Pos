@@ -1,10 +1,12 @@
+@model Pos.Web.DTOs.PrivatePosRoleDTO
+
 @{
     ViewData["Title"] = "Editar Rol";
-    Layout = "~/View/Shared/_MyLayout.cshtml";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
 
 <div class="pagetitle">
-    <h1>Editar ROl</h1>
+    <h1>Editar Rol</h1>
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
@@ -21,7 +23,7 @@
         <div class="card-body">
             <h3 class="card-title">Editar Rol</h3>
 
-            <form class="row g-3" asp-action="Edit" method="post" id="frmCreate">
+            <form class="row g-3" asp-action="Edit" method="POST" id="frmUpdate">
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" id="permissionIds" name="PermissionIds"/>
 
@@ -44,7 +46,7 @@
 
             <h3 class="card-title">Permisos</h3>
             <div class="row">
-                @foreach (var module in Model.Permissions.GroupBy(obj => obj.module))
+                @foreach (var module in Model.permissions.GroupBy(obj => obj.Module))
                 {
                     <div class="col-md-3 mt-3">
                         <h5>@module.Key</h5>
@@ -56,7 +58,7 @@
                                 type="checkbox"
                                 data-permission-id="@permission.Id"
                                 id="permission_@permission.Id"
-                            @(permission.selected ? "checked" : "")>
+                            @(permission.Selected ? "checked" : "")>
                             <label class="form-check-label" for="permission_@permission.Id">@permission.Description</label>
                         </div>
                     }

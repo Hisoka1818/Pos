@@ -60,8 +60,6 @@ namespace Pos.Web.Data.Seeders
 
                  },
 
-
-
             };
 
             foreach (Categories category in categories)

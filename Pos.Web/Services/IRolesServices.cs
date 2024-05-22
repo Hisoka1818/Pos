@@ -1,6 +1,3 @@
-using System.Reflection.PortableExecutable;
-using AspNetCore;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -9,8 +6,8 @@ using Pos.Web.Core;
 using Pos.Web.Core.Pagination;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
+using Pos.Web.DTOs;
 using Pos.Web.Helpers;
-using PrivatePos.Web.DTOs;
 
 namespace Pos.Web.Services
 {
@@ -18,11 +15,12 @@ namespace Pos.Web.Services
     {
         
         public Task<Response<PrivatePosRole>> CreateAsync(PrivatePosRoleDTO dTO);
+        public Task<Response<object>> DeleteAsync(int id);
         public Task<Response<PrivatePosRole>> EditAsync(PrivatePosRoleDTO dTO);
         public Task<Response<PaginationResponse<PrivatePosRole>>> GetListAsync(PaginationRequest request);
         public Task<Response<PrivatePosRoleDTO>> GetOneAsync(int id);
         public Task<Response<IEnumerable<Permission>>> GetPermissionsAsync();
-        public Task<Response<IEnumerable<PermissionForDTO>>>GetPermissionsByRoleAsync(int i);
+        public Task<Response<IEnumerable<PermissionForDTO>>>GetPermissionsByRoleAsync(int id);
     }
 
     public class RolesService : IRolesService
@@ -38,12 +36,12 @@ namespace Pos.Web.Services
 
         public async Task<Response<PrivatePosRole>> CreateAsync(PrivatePosRoleDTO dTO)
         {
-            using (IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync)
+            using (IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
                         //Creacion de Rol
-                        PrivatePosRole model = _converterHelper.ToRole(dto);
+                        PrivatePosRole model = _converterHelper.ToRole(dTO);
                         EntityEntry<PrivatePosRole> modelStored = await _context.PrivatePosRoles.AddAsync(model);
 
                         await _context.SaveChangesAsync();
@@ -83,6 +81,11 @@ namespace Pos.Web.Services
             
         }
 
+        public Task<Response<object>> DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Response<PrivatePosRole>> EditAsync(PrivatePosRoleDTO dto)
         {
             try
@@ -92,36 +95,37 @@ namespace Pos.Web.Services
                     return ResponseHelper<PrivatePosRole>.MakeResponseFail($"El rol '{Constants.SUPER_ADMIN_ROLE_NAME}'no puede ser editado");
                 }
 
-                //Eliminar permisos antiguos
-                List<RolePermission>rolePermissions = await _context.RolePermissions.Where(rp => rp.RoleId == dto.Id).ToListAsync();
-                _context.RolePermissions.RemoveRange(rolePermissions);
-
-                //insercion permisos
                 List<int> permissionIds = new List<int>();
 
-                        if(!string.IsNullOrWhiteSpace(dto.PermissionIds))
-                        {
-                            permissionIds = JsonConvert.DeserializeObject<List<int>>(dto.PermissionIds);
-                        }
+                if (!string.IsNullOrEmpty(dto.PermissionIds))
+                {
+                    permissionIds = JsonConvert.DeserializeObject<List<int>>(dto.PermissionIds);
+                }
 
-                        foreach(int permissionId in permissionIds)
-                        {
-                            RolePermission rolePermission = new RolePermission
-                            {
-                                RoleId = dto.Id,
-                                PermissionId = permissionId
-                            };
 
-                            _context.RolePermissions.Add(rolePermission);
-                        }
+                //Eliminar permisos antiguos
+                List<RolePermission> oldRolePermissions = await _context.RolePermissions.Where(rs => rs.RoleId == dto.Id).ToListAsync();
+                _context.RolePermissions.RemoveRange(oldRolePermissions);
 
-                        //Actualizacion de Rol
-                        PrivatePosRole model=_converterHelper.ToRole(dto);
-                        _context.PrivatePosRoles.Update(model);
+                //insercion permisos
+                foreach (int permissionId in permissionIds)
+                {
+                    RolePermission rolePermission = new RolePermission
+                    {
+                        RoleId = dto.Id,
+                        PermissionId = permissionId
+                    };
 
-                        await _context.SaveChangesAsync();
+                    _context.RolePermissions.Add(rolePermission);
+                }
 
-                        return ResponseHelper<PrivatePosRole>.MakeResponseSuccess("Rol editado correctamente");
+                //Actualizacion de Rol
+                PrivatePosRole model = _converterHelper.ToRole(dto);
+                _context.PrivatePosRoles.Update(model);
+
+                await _context.SaveChangesAsync();
+
+                return ResponseHelper<PrivatePosRole>.MakeResponseSuccess("Rol editado con éxito");
             }
             catch(Exception ex)
             {
@@ -171,7 +175,7 @@ namespace Pos.Web.Services
                     return ResponseHelper<PrivatePosRoleDTO>.MakeResponseFail($"El rol con id '{id}' no existe.");
                 }
 
-                return ResponseHelper<PrivatePosRoleDTO>.MakeResponseSuccess(await _converterHelper.ToRoleDTOAsync(PrivatePosRole));
+                return ResponseHelper<PrivatePosRoleDTO>.MakeResponseSuccess(await _converterHelper.ToRoleDTOAsync(privatePosRole));
             }
             catch(Exception ex)
             {
@@ -179,31 +183,39 @@ namespace Pos.Web.Services
             }
         }
 
-        public Task<Response<IEnumerable<Permission>>> GetPermissionsAsync()
+        public async Task<Response<IEnumerable<Permission>>> GetPermissionsAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                IEnumerable<Permission> permissions = await _context.Permissions.ToListAsync();
+
+                return ResponseHelper<IEnumerable<Permission>>.MakeResponseSuccess(permissions);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper<IEnumerable<Permission>>.MakeResponseFail(ex);
+            }
         }
 
-        public async Task<Response<IEnumerable<Permission>>> GetPersmissionsByRoleAsync(int id)
+        public async Task<Response<IEnumerable<PermissionForDTO>>> GetPermissionsByRoleAsync(int id)
         {
             try
             {
                 Response<PrivatePosRoleDTO> response = await GetOneAsync(id);
 
-                if(response.IsSuccess)
+                if (!response.IsSuccess)
                 {
-                    return ResponseHelper<IEnumerable<PermissionForDTO>>.MakeResponseFail(response.Message);
+                    return ResponseHelper<IEnumerable<PermissionForDTO>>.MakeResponseSuccess(response.Message);
                 }
 
                 List<PermissionForDTO> permissions = response.Result.permissions;
 
-                return ResponseHelper<IEnumerable<Permission>>.MakeResponseSuccess(permissions);
+                return ResponseHelper<IEnumerable<PermissionForDTO>>.MakeResponseSuccess(permissions);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return ResponseHelper<IEnumerable<PermissionForDTO>>.MakeResponseFail(ex);
             }
-
         }
     }
 }

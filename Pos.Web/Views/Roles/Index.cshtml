@@ -1,6 +1,6 @@
-@model PaginationResponse<Pos.Web.Data.Entities.PrivatePosRoles>
+@model PaginationResponse<Pos.Web.Data.Entities.PrivatePosRole>
 
-@inject Pos.Web.Services.IUsersService _userService
+@inject Pos.Web.Services.IUsersService _usersService
 
 @{
     ViewData["Title"] = "Roles";
@@ -16,6 +16,23 @@
         </ol>
     </nav>
 </div>
+<section class="section dashboard">
+
+    <div class="card">
+
+        <div class="card-header py-3">
+            <div class="row">
+                <h3 class="m-0 font-weight-bold text-primary col-md-11">Roles</h3>
+
+                @if (await _usersService.CurrentUserIsAuthorizedAsync("createRoles", "Roles"))
+                {
+                    <div class="col-md-1">
+                        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i></a>
+                    </div>
+                }
+
+            </div>
+        </div>
 
 <p>
     <a class ="btn btn-info" asp-action="CreateRoles">Nuevo Rol</a>
@@ -36,11 +53,11 @@
 
     </form>
 </p>
-<table class="table">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.List.FirstOrDefault().RoleType)
+                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Name)
             </th>
             <th></th>
         </tr>
@@ -50,19 +67,19 @@
         <tr>
             
             <td>
-                @Html.DisplayFor(modelItem => item.RoleType)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @if (await _userService.CurrentUserIsAuthorizedAsync("updateRoles", "Roles"))
+                @if (await _usersService.CurrentUserIsAuthorizedAsync("updateRoles", "Roles"))
                 {
-                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i></a>
                 }
                 
-                @if (await _userService.CurrentUserIsAuthorizedAsync("deleteRoles", "Roles"))
+                @if (await _usersService.CurrentUserIsAuthorizedAsync("deleteRoles", "Roles"))
                 {
-                <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
-                        <button class="btn btn-danger btnDelete">Eliminar</button>
-                    </form>
+                        <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
+                            <button class="btn btn-danger btn-sm btnDelete"><i class="bi bi-trash-fill"></i></button>
+                        </form>
                 }
             </td>
         </tr>

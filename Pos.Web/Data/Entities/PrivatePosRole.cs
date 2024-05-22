@@ -11,6 +11,9 @@ namespace Pos.Web.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Name { get; set; } = null!;
 
-        public ICollection<RolePermission> RolePermissions { get; set; } 
+        public ICollection<RolePermission> RolePermissions { get; set; }
+
+        public IEnumerable<User> Users { get; set; }
+
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
+using Pos.Web.Core;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
+
 
 namespace Pos.Web.Data.Seeders
 {

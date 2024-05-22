@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
-using PrivatePos.Web.DTOs;
 
 namespace Pos.Web.Helpers
 {

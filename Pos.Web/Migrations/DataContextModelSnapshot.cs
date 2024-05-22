@@ -556,7 +556,7 @@ namespace Pos.Web.Migrations
             modelBuilder.Entity("Pos.Web.Data.Entities.User", b =>
                 {
                     b.HasOne("Pos.Web.Data.Entities.PrivatePosRole", "PrivatePosRole")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("PrivatePosRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -572,6 +572,8 @@ namespace Pos.Web.Migrations
             modelBuilder.Entity("Pos.Web.Data.Entities.PrivatePosRole", b =>
                 {
                     b.Navigation("RolePermissions");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Pos.Web.Data.Entities.Product", b =>

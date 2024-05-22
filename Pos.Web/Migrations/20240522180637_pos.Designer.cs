@@ -12,7 +12,7 @@ using Pos.Web.Data;
 namespace Pos.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240522002613_pos")]
+    [Migration("20240522180637_pos")]
     partial class pos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -558,7 +558,7 @@ namespace Pos.Web.Migrations
             modelBuilder.Entity("Pos.Web.Data.Entities.User", b =>
                 {
                     b.HasOne("Pos.Web.Data.Entities.PrivatePosRole", "PrivatePosRole")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("PrivatePosRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -574,6 +574,8 @@ namespace Pos.Web.Migrations
             modelBuilder.Entity("Pos.Web.Data.Entities.PrivatePosRole", b =>
                 {
                     b.Navigation("RolePermissions");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Pos.Web.Data.Entities.Product", b =>

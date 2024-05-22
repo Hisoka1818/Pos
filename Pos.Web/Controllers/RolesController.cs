@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Core;
-using Microsoft.EntityFrameworkCore;
 using Pos.Web.Core.Attributes;
 using Pos.Web.Core.Pagination;
 using Pos.Web.Data.Entities;
 using Pos.Web.Services;
-using PrivatePos.Web.DTOs;
 using AspNetCoreHero.ToastNotification.Abstractions;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Pos.Web.DTOs;
 
 namespace Pos.Web.Controllers
 {
@@ -44,17 +42,17 @@ namespace Pos.Web.Controllers
         [CustomAuthorize(permission: "CreateRoles" , module: "Roles")]
         public async Task<IActionResult> Create()
         {
-            Response<IEnumerable<Permission>> permissionsResponse = await _rolesService.GetPermissionsAssync();
+            Response<IEnumerable<Permission>> response = await _rolesService.GetPermissionsAsync();
 
-            if(!permissionsResponse.IsSuccess)
+            if (!response.IsSuccess)
             {
-                _noty.Error(permissionsResponse.Message);
+                _noty.Error(response.Message);
                 return RedirectToAction(nameof(Index));
             }
 
             PrivatePosRoleDTO dTO = new PrivatePosRoleDTO
             {
-                permissions = permissionsResponse.Result.Select(p=> new PermissionForDTO
+                permissions = response.Result.Select(p => new PermissionForDTO
                 {
                     Id = p.Id,
                     Name = p.Name,
@@ -125,14 +123,15 @@ namespace Pos.Web.Controllers
         [CustomAuthorize(permission: "updateRoles" , module: "Roles")]
         public async Task<IActionResult> Edit(PrivatePosRoleDTO dto)
         {
-            Response<IEnumerable<PermissionForDTO>> res = await _rolesService.GetPermissionsByRoleAsync(dto.Id);
 
             if(!ModelState.IsValid)
             {
                 _noty.Error("Debe ajustar los errores de validacion.");
 
-                
+
+                Response<IEnumerable<PermissionForDTO>> res = await _rolesService.GetPermissionsByRoleAsync(dto.Id);
                 dto.permissions = res.Result.ToList();
+
 
                 return View(dto);
             }
@@ -145,9 +144,10 @@ namespace Pos.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            _noty.Error(response.Message);
-                dto.permissions = res.Result.ToList();
-                return View(dto);
+            _noty.Error(response.Errors.First());
+            Response<IEnumerable<PermissionForDTO>> res2 = await _rolesService.GetPermissionsByRoleAsync(dto.Id);
+            dto.permissions = res2.Result.ToList();
+            return View(dto);
         }
     }
 }
