@@ -1,4 +1,6 @@
-﻿using Pos.Web.Data;
+﻿using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
 using PrivatePos.Web.DTOs;
@@ -9,6 +11,7 @@ namespace Pos.Web.Helpers
     {
         public AccountUserDTO ToAccountDTO(User user);
         public PrivatePosRole ToRole(PrivatePosRoleDTO dto);
+        public Task<PrivatePosRoleDTO> ToRoleDTOAsync(PrivatePosRole role);
     }
 
     public class ConverterHelper : IConverterHelper
@@ -39,6 +42,31 @@ namespace Pos.Web.Helpers
             {
                 Id = dto.Id,
                 Name = dto.Name,
+            };
+        }
+
+        public PrivatePosRole ToRole(PrivatePosRoleDTO dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<PrivatePosRoleDTO> ToRoleDTOAsync(PrivatePosRole role)
+        {
+            List<PermissionForDTO> permissions = await _context.Permissions.Select(p => new PermissionForDTO
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Module = p.Module,
+                Selected = _context.RolePermissions.Any(rp => rp.PermissionId == p.Id && rp.RoleId == role.Id)
+
+            }).ToListAsync();
+
+            return new PrivatePosRoleDTO
+            {
+                Id = role.Id,
+                Name = role.Name,
+                permissions = permissions,
             };
         }
     }
