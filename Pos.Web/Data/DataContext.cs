@@ -8,7 +8,7 @@ namespace Pos.Web.Data
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
         }
-        public DbSet<Categories> Categories { get; set; }
+       
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,8 @@ namespace Pos.Web.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<SalesDetail> SalesDetail { get; set; }
         public DbSet<Customer> Customer { get; set; }
+
+        public DbSet<Categories> Categories { get; set; }
 
 
     }

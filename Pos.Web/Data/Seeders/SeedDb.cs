@@ -15,6 +15,7 @@ namespace Pos.Web.Data.Seeders
         {
             await new CustomerSeeder(_context).SeedAsync();
             await new SalesSeeder(_context).SeedAsync();
+            await new CategoriesSeeder(_context).SeedAsync();
         }
     }
 }
