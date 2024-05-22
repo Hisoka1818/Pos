@@ -1,3 +1,5 @@
+@inject Pos.Web.Services.IUsersService _usersService
+
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
@@ -11,14 +13,18 @@
             </a>
         </li>
 
-        <li class="nav-item">
-            <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Customer"
+        @if (await _usersService.CurrentUserIsAuthorizedAsync("showEmployees", "Empleados"))
+        {
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Customer"
                                                 && ViewContext.RouteData.Values["Action"].ToString() == "Index"
                                                 ? "" : "collapsed")" asp-controller="Customer" asp-action="Index">
-                <i class="bi bi-grid"></i>
-                <span>Clientes</span>
-            </a>
-        </li>
+                    <i class="bi bi-grid"></i>
+                    <span>Clientes</span>
+                </a>
+            </li>
+        }
+
         
         <li class="nav-item">
             <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Sales"

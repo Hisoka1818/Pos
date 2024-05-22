@@ -1,50 +1,58 @@
 ﻿@model Pos.Web.DTOs.ProductDTOs
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="pagetitle">
+    <h1>Editar Producto</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active">Productos</li>
+            <li class="breadcrumb-item active">Editar producto</li>
+        </ol>
+    </nav>
+</div>
 
-<h4>Product</h4>
-<hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Update">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label class="form-label">Nombre del producto</label>
+                <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="form-label">Precio</label>
+                <label asp-for="price" class="control-label"></label>
                 <input asp-for="price" class="form-control" />
                 <span asp-validation-for="price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="form-label">Referencia</label>
+                <label asp-for="reference" class="control-label"></label>
                 <input asp-for="reference" class="form-control" />
                 <span asp-validation-for="reference" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="form-label">Area donde se encuentraa</label>
+                <label asp-for="area" class="control-label"></label>
                 <input asp-for="area" class="form-control" />
                 <span asp-validation-for="area" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="form-label">Categoria</label>
-                <select asp-for="CategoriesId" class ="form-control" asp-items="Model.Categories"></select>
+                <label asp-for="CategoriesId" class="control-label"></label>
+                <select asp-for="CategoriesId" class="form-control" asp-items="Model.Categories"></select>
                 <span asp-validation-for="CategoriesId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Crear producto nuevo" class="btn btn-primary" />
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="Index" class="btn btn-secondary">Volver</a>
             </div>
-           
         </form>
     </div>
 </div>
-
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -7,13 +7,10 @@ using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
 using Pos.Web.Services;
-using System.Linq.Expressions;
 
 
 namespace Pos.Web.Controllers
 {
-
-
 
     public class ProductController : Controller
     {

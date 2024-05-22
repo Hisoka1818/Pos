@@ -5,13 +5,14 @@ using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
 using Pos.Web.Helpers;
-using static Pos.Web.Services.IProductService;
+
 
 namespace Pos.Web.Services
 {
     public interface IProductService
     {
         public Task<Response<List<Product>>> GetListAsync();
+
         public Task<Response<Product>> CreateAsync(ProductDTOs model);
 
         public Task<Response<Product>> UpdateAsync(ProductDTOs model);
