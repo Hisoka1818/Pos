@@ -12,7 +12,7 @@ namespace Pos.Web.Data
 
         public DbSet<Categories> Categories { get; set; }
         public DbSet<Sales> Sales { get; set; }
-        public DbSet<Product> Products { get; set; }
+        public DbSet<Product> Product { get; set; }
         public DbSet<SalesDetail> SalesDetail { get; set; }
         public DbSet<Customer> Customer { get; set; }
         public DbSet<Permission> Permissions { get; set; }

@@ -76,7 +76,7 @@ namespace Pos.Web
             builder.Services.AddScoped<ISalesService, SalesService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<ICategoriesService, CategoriesService>();
-            builder.Services.AddScoped<IProductService, ProductsService>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddTransient<SeedDb>();
             builder.Services.AddScoped<IUsersService, UsersService>();
 

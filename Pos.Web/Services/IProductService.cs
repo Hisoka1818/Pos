@@ -5,12 +5,16 @@ using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
 using Pos.Web.Helpers;
+using Pos.Web.Core.Pagination;
+
 
 
 namespace Pos.Web.Services
 {
     public interface IProductService
     {
+        public Task<Response<PaginationResponse<Product>>> GetListAsync(PaginationRequest request);
+
         public Task<Response<List<Product>>> GetListAsync();
 
         public Task<Response<Product>> CreateAsync(ProductDTOs model);
@@ -19,12 +23,12 @@ namespace Pos.Web.Services
 
         Task<Response<Product>> DeleteAsync(int id);
 
-        public class ProductsService : IProductService
+        public class ProductService : IProductService
         {
 
             private readonly DataContext _context;
 
-            public ProductsService(DataContext context)
+            public ProductService(DataContext context)
             {
                 _context = context;
             }
@@ -58,7 +62,7 @@ namespace Pos.Web.Services
             {
                 try
                 {
-                    List<Product> list = await _context.Products.Include(b => b.Categories).ToListAsync();
+                    List<Product> list = await _context.Product.Include(b => b.Categories).ToListAsync();
                     return ResponseHelper<List<Product>>.MakeResponseSuccess(list, "Producto obtenido con exito");
                 }
                 catch (Exception ex)
@@ -72,7 +76,7 @@ namespace Pos.Web.Services
 
                 try
                 {
-                    Product product = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
+                    Product product = await _context.Product.FirstOrDefaultAsync(a => a.Id == model.Id);
 
                     product.Name = model.Name;
                     product.price = model.price;
@@ -82,7 +86,7 @@ namespace Pos.Web.Services
 
 
 
-                    _context.Products.Update(product);
+                    _context.Product.Update(product);
                     await _context.SaveChangesAsync();
 
 
@@ -94,12 +98,48 @@ namespace Pos.Web.Services
                 }
             }
 
+            public async Task<Response<PaginationResponse<Product>>> GetListAsync(PaginationRequest request)
+            {
+                try
+                {
+                    IQueryable<Product> queryable = _context.Product.AsQueryable();
+
+                    //Ajustar en este momento se esta buscando por tipo de cliente
+                    if (!string.IsNullOrWhiteSpace(request.Filter))
+                    {
+                        queryable = queryable.Where(s => s.Name.ToLower().Contains(request.Filter.ToLower()));
+                    }
+
+                    PagedList<Product> list = await PagedList<Product>.ToPagedListAsync(queryable, request);
+
+
+                    PaginationResponse<Product> result = new PaginationResponse<Product>
+                    {
+                        List = list,
+                        TotalCount = list.TotalCount,
+                        RecordsPerPage = list.RecordsPerPage,
+                        CurrentPage = list.CurrentPage,
+                        TotalPages = list.TotalPages,
+
+                        //Faltante:
+                        Filter = request.Filter,
+                    };
+
+                    return ResponseHelper<PaginationResponse<Product>>.MakeResponseSuccess(result, "Producto obtenidos con éxito");
+                }
+                catch (Exception ex)
+                {
+                    return ResponseHelper<PaginationResponse<Product>>.MakeResponseFail(ex);
+                }
+            }
+
+
             public async Task<Response<Product>> DeleteAsync([FromRoute] int id)
             {
                 try
                 {
-                    Product product = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
-                    _context.Products.Remove(product);
+                    Product product = await _context.Product.FirstOrDefaultAsync(a => a.Id == id);
+                    _context.Product.Remove(product);
                     await _context.SaveChangesAsync();
 
                     return ResponseHelper<Product>.MakeResponseSuccess(product, "Producto eliminada con exito");

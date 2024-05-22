@@ -8,7 +8,7 @@ using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
 using Pos.Web.Services;
 using Pos.Web.Core.Pagination;
-using static Pos.Web.Services.ICategoriesService;
+using static Pos.Web.Services.IProductService;
 
 
 
@@ -40,7 +40,8 @@ namespace Pos.Web.Controllers
                 Filter = Filter,
             };
 
-            Response<PaginationResponse<Categories>> response = await _productServices.GetListAsync(paginationRequest);
+            Response<PaginationResponse<Product>> response = await _productService.GetListAsync(paginationRequest);
+            
             return View(response.Result);
         }
 
@@ -96,7 +97,7 @@ namespace Pos.Web.Controllers
         {
             try
             {
-                Product? product = await _context.Products.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
+                Product? product = await _context.Product.Include(b => b.Categories).FirstOrDefaultAsync(b => b.Id == id);
 
                 if (product is null)
                 {
@@ -143,7 +144,7 @@ namespace Pos.Web.Controllers
                     }).ToArrayAsync();
                     return View(model);
                 }
-                Product sales = await _context.Products.FirstOrDefaultAsync(a => a.Id == model.Id);
+                Product sales = await _context.Product.FirstOrDefaultAsync(a => a.Id == model.Id);
 
                 if (sales is null)
                 {
@@ -173,7 +174,7 @@ namespace Pos.Web.Controllers
         {
             try
             {
-                Product product = await _context.Products.FirstOrDefaultAsync(a => a.Id == id);
+                Product product = await _context.Product.FirstOrDefaultAsync(a => a.Id == id);
 
                 if (product is null)
                 {
