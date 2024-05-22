@@ -7,6 +7,9 @@ using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
 using Pos.Web.Services;
+using Pos.Web.Core.Pagination;
+using static Pos.Web.Services.ICategoriesService;
+
 
 
 namespace Pos.Web.Controllers
@@ -26,9 +29,18 @@ namespace Pos.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] int? RecordsPerPage,
+                                               [FromQuery] int? Page,
+                                               [FromQuery] string? Filter)
         {
-            Response<List<Product>> response = await _productService.GetListAsync();
+            PaginationRequest paginationRequest = new PaginationRequest
+            {
+                RecordsPerPage = RecordsPerPage ?? 5, //15
+                Page = Page ?? 1,
+                Filter = Filter,
+            };
+
+            Response<PaginationResponse<Categories>> response = await _productServices.GetListAsync(paginationRequest);
             return View(response.Result);
         }
 
