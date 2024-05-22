@@ -7,6 +7,7 @@ using Pos.Web.Data.Entities;
 using Pos.Web.Services;
 using PrivatePos.Web.DTOs;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Pos.Web.Controllers
 {
@@ -107,11 +108,46 @@ namespace Pos.Web.Controllers
 
         [HttpGet]
         [CustomAuthorize(permission: "updateRoles" , module: "Roles")]
-        public async Task<IActionResult> Edit()
+        public async Task<IActionResult> Edit(int id)
         {
-            Response<PrivatePosRoleDTO> response = await _rolesService.GetOneAsycn(id);
+            Response<PrivatePosRoleDTO> response = await _rolesService.GetOneAsync(id);
+
+            if (!response.IsSuccess)
+            {
+                _noty.Error(response.Message);
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(response.Result);
+        }
+
+        [HttpPost]
+        [CustomAuthorize(permission: "updateRoles" , module: "Roles")]
+        public async Task<IActionResult> Edit(PrivatePosRoleDTO dto)
+        {
+            Response<IEnumerable<PermissionForDTO>> res = await _rolesService.GetPermissionsByRoleAsync(dto.Id);
+
+            if(!ModelState.IsValid)
+            {
+                _noty.Error("Debe ajustar los errores de validacion.");
+
+                
+                dto.permissions = res.Result.ToList();
+
+                return View(dto);
+            }
+
+            Response<PrivatePosRole> response = await _rolesService.EditAsync(dto);
             
-            return View();
+            if(response.IsSuccess)
+            {
+                _noty.Success(response.Message);
+                return RedirectToAction(nameof(Index));
+            }
+
+            _noty.Error(response.Message);
+                dto.permissions = res.Result.ToList();
+                return View(dto);
         }
     }
 }

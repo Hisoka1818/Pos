@@ -22,6 +22,7 @@ namespace Pos.Web.Services
         public Task<Response<PaginationResponse<PrivatePosRole>>> GetListAsync(PaginationRequest request);
         public Task<Response<PrivatePosRoleDTO>> GetOneAsync(int id);
         public Task<Response<IEnumerable<Permission>>> GetPermissionsAsync();
+        public Task<Response<IEnumerable<PermissionForDTO>>>GetPermissionsByRoleAsync(int i);
     }
 
     public class RolesService : IRolesService
@@ -159,9 +160,23 @@ namespace Pos.Web.Services
             }
         }
 
-        public Task<Response<PrivatePosRoleDTO>> GetOneAsync(int id)
+        public async Task<Response<PrivatePosRoleDTO>> GetOneAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                PrivatePosRole? privatePosRole = await _context.PrivatePosRoles.FirstOrDefaultAsync(r => r.Id == id);
+
+                if(privatePosRole is null)
+                {
+                    return ResponseHelper<PrivatePosRoleDTO>.MakeResponseFail($"El rol con id '{id}' no existe.");
+                }
+
+                return ResponseHelper<PrivatePosRoleDTO>.MakeResponseSuccess(await _converterHelper.ToRoleDTOAsync(PrivatePosRole));
+            }
+            catch(Exception ex)
+            {
+                return ResponseHelper<PrivatePosRoleDTO>.MakeResponseFail(ex);
+            }
         }
 
         public Task<Response<IEnumerable<Permission>>> GetPermissionsAsync()
@@ -169,17 +184,24 @@ namespace Pos.Web.Services
             throw new NotImplementedException();
         }
 
-        public async Task<Response<IEnumerable<Permission>>> GetPersmissionsAsync()
+        public async Task<Response<IEnumerable<Permission>>> GetPersmissionsByRoleAsync(int id)
         {
             try
             {
-                IEnumerable<Permission> permissions = await _context.Permissions.ToListAsync();
+                Response<PrivatePosRoleDTO> response = await GetOneAsync(id);
 
-                return ResponseHelper<IEnumerable<Permission>>.MakeResponseSucces(Permissions);
+                if(response.IsSuccess)
+                {
+                    return ResponseHelper<IEnumerable<PermissionForDTO>>.MakeResponseFail(response.Message);
+                }
+
+                List<PermissionForDTO> permissions = response.Result.permissions;
+
+                return ResponseHelper<IEnumerable<Permission>>.MakeResponseSuccess(permissions);
             }
             catch(Exception ex)
             {
-                return ResponseHelper<IEnumerable<Permission>>.MakeResponseFail(ex);
+                return ResponseHelper<IEnumerable<PermissionForDTO>>.MakeResponseFail(ex);
             }
 
         }
