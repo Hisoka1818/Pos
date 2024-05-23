@@ -1,3 +1,4 @@
+@using Pos.Web.Core
 @model PaginationResponse<Pos.Web.Data.Entities.PrivatePosRole>
 
 @inject Pos.Web.Services.IUsersService _usersService
@@ -16,6 +17,7 @@
         </ol>
     </nav>
 </div>
+
 <section class="section dashboard">
 
     <div class="card">
@@ -34,123 +36,129 @@
             </div>
         </div>
 
-<p>
-    <a class ="btn btn-info" asp-action="CreateRoles">Nuevo Rol</a>
-    <form class="navbar-search" asp-action="Index" method="GET">
-        <input type="hidden" name="Page" value="@Model.CurrentPage" />
-        <input type="hidden" name="RecordsPerPage" value="@Model.RecordsPerPage" />
+        <div class="card-body mt-2">
 
-        <div class="input-group mb-3">
+            <form class="navbar-search" asp-action="Index" method="GET">
+                <input type="hidden" name="Page" value="@Model.CurrentPage" />
+                <input type="hidden" name="RecordsPerPage" value="@Model.RecordsPerPage" />
 
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar.." aria-label="Search" asp-for="@Model.Filter" name="Filter">
+                <div class="input-group mb-3">
 
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Buscar.." aria-label="Search" asp-for="@Model.Filter" name="Filter">
+
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th> Rol </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.List)
+                    {
+                        <tr>
+                            <td> @Html.DisplayFor(modelItem => item.Name) </td>
+
+                            <td>
+
+                                @if (item.Name != Constants.SUPER_ADMIN_ROLE_NAME)
+                                {
+                                    @if (await _usersService.CurrentUserIsAuthorizedAsync("updateRoles", "Roles"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i></a>
+                                    }
+
+                                    @if (await _usersService.CurrentUserIsAuthorizedAsync("deleteRoles", "Roles"))
+                                    {
+                                        <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
+                                            <button class="btn btn-danger btn-sm btnDelete"><i class="bi bi-trash-fill"></i></button>
+                                        </form>
+                                    }
+                                }
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @* Paginación *@
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+
+                    @*Primero*@
+                    <li class="page-item">
+                        <a class="page-link @(Model.CurrentPage == 1 ? "disabled" : "" )"
+                           asp-action="Index"
+                           asp-route-Page="1"
+                           asp-route-Filter="@Model.Filter"
+                           asp-route-RecordsPerPage="@Model.RecordsPerPage">
+                            &laquo;
+                        </a>
+                    </li>
+
+                    @*Anterior*@
+                    <li class="page-item">
+                        <a class="page-link @(!Model.HasPrevious ? "disabled" : "" )"
+                           asp-action="Index"
+                           asp-route-Filter="@Model.Filter"
+                           asp-route-Page="@(Model.CurrentPage - 1)"
+                           asp-route-RecordsPerPage="@Model.RecordsPerPage">
+                            &lsaquo;
+                        </a>
+                    </li>
+
+                    @*Paginas*@
+                    @foreach (int page in Model.Pages)
+                    {
+
+                        <li class="page-item">
+                            <a class="page-link @(Model.CurrentPage == page ? "active" : "" )"
+                               asp-action="Index"
+                               asp-route-Filter="@Model.Filter"
+                               asp-route-Page="@(page)"
+                               asp-route-RecordsPerPage="@Model.RecordsPerPage">
+                                @(page)
+                            </a>
+                        </li>
+                    }
+
+                    @*Siguiente*@
+                    <li class="page-item">
+                        <a class="page-link @(!Model.HasNext ? "disabled" : "" )"
+                           asp-action="Index"
+                           asp-route-Filter="@Model.Filter"
+                           asp-route-Page="@(Model.CurrentPage + 1)"
+                           asp-route-RecordsPerPage="@Model.RecordsPerPage">
+                            &rsaquo;
+                        </a>
+                    </li>
+
+                    @*Último*@
+                    <li class="page-item">
+                        <a class="page-link @(Model.TotalPages == Model.CurrentPage ? "disabled" : "" )"
+                           asp-action="Index"
+                           asp-route-Filter="@Model.Filter"
+                           asp-route-Page="@Model.TotalPages"
+                           asp-route-RecordsPerPage="@Model.RecordsPerPage">
+                            &raquo;
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
         </div>
-
-    </form>
-</p>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.List.FirstOrDefault().Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.List) {
-        <tr>
-            
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @if (await _usersService.CurrentUserIsAuthorizedAsync("updateRoles", "Roles"))
-                {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-fill"></i></a>
-                }
-                
-                @if (await _usersService.CurrentUserIsAuthorizedAsync("deleteRoles", "Roles"))
-                {
-                        <form asp-action="Delete" asp-route-id="@item.Id" style="display:contents">
-                            <button class="btn btn-danger btn-sm btnDelete"><i class="bi bi-trash-fill"></i></button>
-                        </form>
-                }
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-<nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-
-        @*Primero*@
-        <li class="page-item">
-            <a class="page-link @(Model.CurrentPage == 1 ? "disabled" : "" )"
-               asp-action="Index"
-               asp-route-Page="1"
-               asp-route-Filter="@Model.Filter"
-               asp-route-RecordsPerPage="@Model.RecordsPerPage">
-                &laquo;
-            </a>
-        </li>
-
-        @*Anterior*@
-        <li class="page-item">
-            <a class="page-link @(!Model.HasPrevious ? "disabled" : "" )"
-               asp-action="Index"
-               asp-route-Filter="@Model.Filter"
-               asp-route-Page="@(Model.CurrentPage - 1)"
-               asp-route-RecordsPerPage="@Model.RecordsPerPage">
-                &lsaquo;
-            </a>
-        </li>
-
-        @*Paginas*@
-        @foreach (int page in Model.Pages)
-        {
-
-            <li class="page-item">
-                <a class="page-link @(Model.CurrentPage == page ? "active" : "" )"
-                   asp-action="Index"
-                   asp-route-Filter="@Model.Filter"
-                   asp-route-Page="@(page)"
-                   asp-route-RecordsPerPage="@Model.RecordsPerPage">
-                    @(page)
-                </a>
-            </li>
-        }
-
-        @*Siguiente*@
-        <li class="page-item">
-            <a class="page-link @(!Model.HasNext ? "disabled" : "" )"
-               asp-action="Index"
-               asp-route-Filter="@Model.Filter"
-               asp-route-Page="@(Model.CurrentPage + 1)"
-               asp-route-RecordsPerPage="@Model.RecordsPerPage">
-                &rsaquo;
-            </a>
-        </li>
-
-        @*Último*@
-        <li class="page-item">
-            <a class="page-link @(Model.TotalPages == Model.CurrentPage ? "disabled" : "" )"
-               asp-action="Index"
-               asp-route-Filter="@Model.Filter"
-               asp-route-Page="@Model.TotalPages"
-               asp-route-RecordsPerPage="@Model.RecordsPerPage">
-                &raquo;
-            </a>
-        </li>
-    </ul>
-</nav>
-
+    </div>
+</section>
 
 @section Scripts {
     <script>

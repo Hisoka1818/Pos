@@ -64,7 +64,7 @@ namespace Pos.Web.Helpers
             {
                 Id = role.Id,
                 Name = role.Name,
-                permissions = permissions,
+                Permissions = permissions,
             };
         }
     }

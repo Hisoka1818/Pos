@@ -200,6 +200,8 @@ namespace Pos.Web.Data.Seeders
             }
         }
 
+
+
         private async Task CheckRolesAsync()
         {
             await AdministradorRoleAsync();

@@ -11,25 +11,27 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Dashboard">Dashboard</a></li>
             <li class="breadcrumb-item active"><a asp-action="Index">Roles</a></li>
-            <li class="breadcrumb-item active">Editar role</li>
+            <li class="breadcrumb-item active">Editar Rol</li>
         </ol>
     </nav>
 </div>
 
 <section class="section dashboard">
 
-    @*Rol*@
+    @* Rol *@
     <div class="card">
         <div class="card-body">
             <h3 class="card-title">Editar Rol</h3>
 
+
             <form class="row g-3" asp-action="Edit" method="POST" id="frmUpdate">
+
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" id="permissionIds" name="PermissionIds"/>
+                <input type="hidden" id="permissionIds" name="PermissionIds" />
 
                 <div class="col-md-12">
                     <div class="form-floating">
-                       <input asp-for="Name" class="form-control" placeholder="@Html.DisplayFor(model=>model.Name)">
+                        <input asp-for="Name" class="form-control" placeholder="@Html.DisplayFor(model => model.Name)">
                         <label>@(Html.DisplayNameFor(model => model.Name))</label>
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
@@ -40,66 +42,68 @@
         </div>
     </div>
 
-    @*Permisos*@
+    @* Permisos *@
     <div class="card shadow mb-4">
         <div class="card-body">
 
             <h3 class="card-title">Permisos</h3>
+
             <div class="row">
-                @foreach (var module in Model.permissions.GroupBy(obj => obj.Module))
+
+                @foreach (var module in Model.Permissions.GroupBy(objeto => objeto.Module))
                 {
                     <div class="col-md-3 mt-3">
                         <h5>@module.Key</h5>
 
-                    @foreach(var permission in module)
-                    {
-                        <div class="form-check form-switch">
-                            <input class="form-check-input permission"
-                                type="checkbox"
-                                data-permission-id="@permission.Id"
-                                id="permission_@permission.Id"
-                            @(permission.Selected ? "checked" : "")>
-                            <label class="form-check-label" for="permission_@permission.Id">@permission.Description</label>
-                        </div>
-                    }
+                        @foreach (var permission in module)
+                        {
+                            <div class="form-check form-switch">
+                                <input class="form-check-input permission"
+                                       type="checkbox"
+                                       data-permission-id="@permission.Id"
+                                       id="permission_@permission.Id"
+                                @(permission.Selected ? "checked" : "")>
+
+                                <label class="form-check-label" for="permission_@permission.Id">@permission.Description</label>
+                            </div>
+                        }
+                    </div>
+                }
             </div>
-            }
         </div>
     </div>
 
     <div class="text-center">
         <button type="submit" class="btn btn-primary" form="frmUpdate" id="btnSave">Guardar</button>
-        <a asp-action="Index" class="btn btn-secundary">Volver</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver</a>
     </div>
 
 </section>
 
-@section Scripts
-{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 
-    <script>
+        <script>
 
-        $(document).ready(function()
-        {
+            $(document).ready(function () {
 
-            $("#btnSave").click(function(e){
+                $('#btnSave').click(function (e) {
 
-                const permissions = $('.permission:checked');
+                    const permissions = $('.permission:checked');
+                    let permissionIds = [];
 
-                let permissionIds = [];
+                    permissions.each(function () {
 
-                permissions.each(function() {
+                        const permissionId = $(this).data('permission-id');
+                        permissionIds.push(permissionId);
+                    });
 
-                    const permissionId = $(this).data('permission-id');
-                    permissionIds.push(permissionId);
+                    $('#permissionIds').val(JSON.stringify(permissionIds));
+
                 });
-
-                $('#permissionIds').val(JSON.stringify(permissionIds)));
 
             });
 
-        });
-
-    </script>
+        </script>
+    }
 }

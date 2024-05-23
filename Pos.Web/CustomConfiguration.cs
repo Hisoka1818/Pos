@@ -11,6 +11,7 @@ using static Pos.Web.Services.IProductService;
 using Microsoft.AspNetCore.Identity;
 using Pos.Web.Data.Entities;
 using Pos.Web.Helpers;
+using PrivatePos.Web.Services;
 
 
 namespace Pos.Web
@@ -72,7 +73,7 @@ namespace Pos.Web
         private static void AddServices(this WebApplicationBuilder builder)
         {
             // Services
-            //builder.Services.AddScoped<IRolesService, RolesService>();
+            
             builder.Services.AddScoped<IRolesService, RolesService>();
             builder.Services.AddScoped<ISalesService, SalesService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
