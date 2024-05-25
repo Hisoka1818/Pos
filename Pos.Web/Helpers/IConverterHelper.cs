@@ -34,18 +34,13 @@ namespace Pos.Web.Helpers
             };
         }
 
-        public PrivatePosRole Torole(PrivatePosRoleDTO dto)
+        public PrivatePosRole ToRole(PrivatePosRoleDTO dto)
         {
             return new PrivatePosRole
             {
                 Id = dto.Id,
                 Name = dto.Name,
             };
-        }
-
-        public PrivatePosRole ToRole(PrivatePosRoleDTO dto)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<PrivatePosRoleDTO> ToRoleDTOAsync(PrivatePosRole role)

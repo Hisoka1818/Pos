@@ -12,7 +12,7 @@ using Pos.Web.Data;
 namespace Pos.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240522180637_pos")]
+    [Migration("20240525200359_pos")]
     partial class pos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
