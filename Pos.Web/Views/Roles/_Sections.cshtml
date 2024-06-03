@@ -1,0 +1,30 @@
+﻿@Model Pos.Web.DTOs.PrivatePosRoleDTO
+
+<div class="card shadow mb-4">
+    <div class="card-body">
+
+        <h3 class="card-title">Secciones</h3>
+
+        <div class="row">
+
+            @foreach (var group in Model.Sections.GroupByItemsNumber(5))
+            {
+                <div class="col-md-3 mt-1">
+
+                    @foreach (var item in group)
+                    {
+                        <div class="form-check form-switch">
+                            <input class="form-check-input section"
+                                   type="checkbox"
+                                   data-section-id="@item.Id"
+                                   id="section_@item.Id"
+                            @(item.Selected ? "checked" : "")>
+
+                            <label class="form-check-label" for="section_@item.Id">@item.Name</label>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Models;
+using PrivateBlog.Web.Services;
 using System.Diagnostics;
 
 namespace Pos.Web.Controllers
@@ -9,10 +10,12 @@ namespace Pos.Web.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IHomeService _homeService;
 
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+            _homeService = homeService;
         }
 
         public IActionResult Index()

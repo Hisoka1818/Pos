@@ -12,6 +12,7 @@ namespace Pos.Web.Data.Entities
         public string Name { get; set; } = null!;
 
         public ICollection<RolePermission> RolePermissions { get; set; }
+        public ICollection<RoleSection> RoleSections { get; set; }
 
         public IEnumerable<User> Users { get; set; }
 

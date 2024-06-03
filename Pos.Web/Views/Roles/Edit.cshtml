@@ -27,51 +27,18 @@
             <form class="row g-3" asp-action="Edit" method="POST" id="frmUpdate">
 
                 <input type="hidden" asp-for="Id" />
-                <input type="hidden" id="permissionIds" name="PermissionIds" />
-
-                <div class="col-md-12">
-                    <div class="form-floating">
-                        <input asp-for="Name" class="form-control" placeholder="@Html.DisplayFor(model => model.Name)">
-                        <label>@(Html.DisplayNameFor(model => model.Name))</label>
-                        <span asp-validation-for="Name" class="text-danger"></span>
-                    </div>
-                </div>
+                <partial name="_Role"/>
 
             </form>
 
         </div>
     </div>
 
+    @*Secciones*@
+    <partial name="_Sections"/>
+
     @* Permisos *@
-    <div class="card shadow mb-4">
-        <div class="card-body">
-
-            <h3 class="card-title">Permisos</h3>
-
-            <div class="row">
-
-                @foreach (var module in Model.Permissions.GroupBy(objeto => objeto.Module))
-                {
-                    <div class="col-md-3 mt-3">
-                        <h5>@module.Key</h5>
-
-                        @foreach (var permission in module)
-                        {
-                            <div class="form-check form-switch">
-                                <input class="form-check-input permission"
-                                       type="checkbox"
-                                       data-permission-id="@permission.Id"
-                                       id="permission_@permission.Id"
-                                @(permission.Selected ? "checked" : "")>
-
-                                <label class="form-check-label" for="permission_@permission.Id">@permission.Description</label>
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
+    <partial name="_Permissions"/>
 
     <div class="text-center">
         <button type="submit" class="btn btn-primary" form="frmUpdate" id="btnSave">Guardar</button>
@@ -99,6 +66,18 @@
                     });
 
                     $('#permissionIds').val(JSON.stringify(permissionIds));
+
+                const sections = $('.section:checked');
+
+                let sectionIds = [];
+
+                sections.each(function () {
+
+                    const sectionId = $(this).data('section-id');
+                    sectionIds.push(sectionId);
+                });
+
+                $('#sectionIds').val(JSON.stringify(sectionIds));
 
                 });
 

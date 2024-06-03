@@ -32,6 +32,7 @@ namespace Pos.Web.Data.Seeders
             await _context.SaveChangesAsync();
         }
 
+
         private List<Permission> Roles()
         {
             List<Permission> list = new List<Permission>

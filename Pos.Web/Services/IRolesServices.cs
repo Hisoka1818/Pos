@@ -26,6 +26,8 @@ namespace PrivatePos.Web.Services
         public Task<Response<IEnumerable<Permission>>> GetPermissionsAsync();
 
         public Task<Response<IEnumerable<PermissionForDTO>>> GetPermissionsByRoleAsync(int id);
+        public Task<Response<IEnumerable<Section>>> GetSectionsAsync();
+        public Task<Response<IEnumerable<SectionForDTO>>> GetSectionsByRoleAsync(int id);
     }
 
     public class RolesService : IRolesService
@@ -70,6 +72,25 @@ namespace PrivatePos.Web.Services
                         };
 
                         _context.RolePermissions.Add(rolePermission);
+                    }
+
+                    // Inserción de secciones
+                    List<int> sectionIds = new List<int>();
+
+                    if (!string.IsNullOrWhiteSpace(dto.SectionIds))
+                    {
+                        sectionIds = JsonConvert.DeserializeObject<List<int>>(dto.SectionIds);
+                    }
+
+                    foreach (int sectionId in sectionIds)
+                    {
+                        RoleSection roleSection = new RoleSection
+                        {
+                            RoleId = roleId,
+                            SectionId = sectionId
+                        };
+
+                        _context.RoleSections.Add(roleSection);
                     }
 
                     await _context.SaveChangesAsync();
@@ -248,6 +269,25 @@ namespace PrivatePos.Web.Services
             }
         }
 
+        public async Task<Response<IEnumerable<Section>>> GetSectionsAsync()
+        {
+            try
+            {
+                IEnumerable<Section> sections = await _context.Sections.Where(s => !s.IsHidden)
+                                                                       .ToListAsync();
+
+                return ResponseHelper<IEnumerable<Section>>.MakeResponseSuccess(sections);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper<IEnumerable<Section>>.MakeResponseFail(ex);
+            }
+        }
+
+        public Task<Response<IEnumerable<SectionForDTO>>> GetSectionsByRoleAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
         private async Task<Response<PrivatePosRole>> GetOneModelAsync(int id)
         {
             try
