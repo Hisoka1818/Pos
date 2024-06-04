@@ -56,7 +56,7 @@ namespace Pos.Web.Services
             _context = context;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
-            _converterHelper = converterhelper;
+            _converterHelper = converter;
         }
 
         //private IHttpContextAccessor _httpContextAccessor;
@@ -75,6 +75,33 @@ namespace Pos.Web.Services
         public async Task<IdentityResult> ConfirmEmailAsync(User user, string token)
         {
             return await _userManager.ConfirmEmailAsync(user, token);
+        }
+
+        public async Task<Response<User>> CreateAsync(UserDTO dto)
+        {
+            try
+            {
+                User user = _converterHelper.ToUser(dto);
+                Guid id = Guid.NewGuid();
+                user.Id = id.ToString();
+
+                IdentityResult res = await AddUserAsync(user, dto.Document);
+
+                if (!res.Succeeded)
+                {
+                    return ResponseHelper<User>.MakeResponseFail("Error al crear el usuario.");
+                }
+
+                // TODO: Eliminar cuando se haga envío de Email
+                string token = await GenerateEmailConfirmationTokenAsync(user);
+                await ConfirmEmailAsync(user, token);
+
+                return ResponseHelper<User>.MakeResponseSuccess(user, "Usuario creado con éxito");
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper<User>.MakeResponseFail(ex);
+            }
         }
 
         public async Task<bool> CurrentUserIsAuthorizedAsync(string permission, string module)

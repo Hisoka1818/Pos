@@ -2,6 +2,7 @@
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
+using System.Security.AccessControl;
 
 namespace Pos.Web.Helpers
 {
@@ -10,6 +11,7 @@ namespace Pos.Web.Helpers
         public AccountUserDTO ToAccountDTO(User user);
         public PrivatePosRole ToRole(PrivatePosRoleDTO dto);
         public Task<PrivatePosRoleDTO> ToRoleDTOAsync(PrivatePosRole role);
+        public User ToUser(UserDTO dto);
     }
 
     public class ConverterHelper : IConverterHelper
@@ -34,18 +36,13 @@ namespace Pos.Web.Helpers
             };
         }
 
-        public PrivatePosRole Torole(PrivatePosRoleDTO dto)
+        public PrivatePosRole ToRole(PrivatePosRoleDTO dto)
         {
             return new PrivatePosRole
             {
                 Id = dto.Id,
                 Name = dto.Name,
             };
-        }
-
-        public PrivatePosRole ToRole(PrivatePosRoleDTO dto)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<PrivatePosRoleDTO> ToRoleDTOAsync(PrivatePosRole role)
@@ -60,11 +57,36 @@ namespace Pos.Web.Helpers
 
             }).ToListAsync();
 
+            List<SectionForDTO> sections = await _context.Sections.Where(s => !s.IsHidden).Select(p => new SectionForDTO
+             {
+               Id = p.Id,
+               Name = p.Name,
+               Selected = _context.RoleSections.Any(rs => rs.SectionId == p.Id && rs.RoleId == role.Id)
+             }).ToListAsync();
+
             return new PrivatePosRoleDTO
             {
                 Id = role.Id,
                 Name = role.Name,
                 Permissions = permissions,
+                Sections = sections,
+            };
+
+
+        }
+
+        public User ToUser(UserDTO dto)
+        {
+            return new User
+            {
+                Id = dto.Id.ToString(),
+                Document = dto.Document,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                UserName = dto.Email,
+                PrivatePosRoleId = dto.PrivateBlogRoleId,
+                PhoneNumber = dto.PhoneNumber,
             };
         }
     }

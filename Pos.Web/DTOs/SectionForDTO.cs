@@ -1,4 +1,5 @@
-﻿namespace Pos.Web.DTOs
+﻿using Pos.Web.Data.Entities;
+namespace Pos.Web.DTOs
 {
     public class SectionForDTO : Section
     {

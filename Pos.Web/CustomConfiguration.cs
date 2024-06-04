@@ -86,7 +86,7 @@ namespace Pos.Web
             builder.Services.AddScoped<IConverterHelper, ConverterHelper>();
         }
 
-        public static WebApplication AddCustomConfiguration(this WebApplication app)
+        /*public static WebApplication AddCustomConfiguration(this WebApplication app)
         {
             app.UseNotyf();
 
@@ -105,5 +105,6 @@ namespace Pos.Web
                 service!.SeedAsync().Wait();
             }
         }
+        */
     }
 }

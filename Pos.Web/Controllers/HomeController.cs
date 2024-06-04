@@ -12,7 +12,7 @@ namespace Pos.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IHomeService _homeService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IHomeService homeService)
         {
             _logger = logger;
             _homeService = homeService;

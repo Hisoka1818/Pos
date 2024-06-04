@@ -1,13 +1,12 @@
 ﻿using Pos.Web.Core.Pagination;
+using Pos.Web.Data.Entities;
 using System.Reflection.Metadata;
 
 namespace Pos.Web.DTOs
 {
-    public class SectionDTO
+    public class SectionDTO:Section
     {
-        public class SectionDTO : Section
-        {
-            public PaginationResponse<Blog> PaginatedBlogs { get; set; }
-        }
+            
+
     }
 }

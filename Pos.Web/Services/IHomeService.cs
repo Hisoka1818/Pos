@@ -62,7 +62,10 @@ namespace PrivateBlog.Web.Services
                     return ResponseHelper<SectionDTO>.MakeResponseFail($"No tiene permiso para visualizar esta sección.");
                 }
 
-                IQueryable<Blog> query = _context.Blogs.Where(a => a.Section == section && a.IsPublished);
+                /* A REVISION
+                 
+                  
+                 IQueryable<Blog> query = _context.Blogs.Where(a => a.Section == section && a.IsPublished);
 
                 if (!string.IsNullOrWhiteSpace(request.Filter))
                 {
@@ -91,7 +94,7 @@ namespace PrivateBlog.Web.Services
                     Id = section.Id,
                     Name = section.Name,
                     PaginatedBlogs = result
-                };
+                };*/
 
                 return ResponseHelper<SectionDTO>.MakeResponseSuccess(dto);
             }
@@ -113,7 +116,7 @@ namespace PrivateBlog.Web.Services
 
                 if (!await _usersService.CurrentUserIsSuperAdmin())
                 {
-                    query = query.Where(s => s.RoleSections.Any(rs => rs.RoleId == user.PrivateBlogRoleId));
+                    query = query.Where(s => s.RoleSections.Any(rs => rs.RoleId == user.PrivatePosRoleId));
                 }
 
                 if (!string.IsNullOrWhiteSpace(request.Filter))
