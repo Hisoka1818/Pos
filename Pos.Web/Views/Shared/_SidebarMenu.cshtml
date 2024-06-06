@@ -6,6 +6,7 @@
 
         <li class="nav-item">
             <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Home"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Dashboard"
                                                 ? "" : "collapsed")" asp-action="Dashboard" asp-controller="Home">
                 <i class="bi bi-grid"></i>
                 <span>Dashboard</span>
@@ -16,7 +17,7 @@
         {
             <li class="nav-item">
                 <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Customer"
-                                               // && ViewContext.RouteData.Values["Action"].ToString() == "Index"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Index"
                                                 ? "" : "collapsed")" asp-controller="Customer" asp-action="Index">
                     <i class="bi bi-grid"></i>
                     <span>Clientes</span>
@@ -28,7 +29,7 @@
         {
             <li class="nav-item">
                 <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Roles"
-                                               // && ViewContext.RouteData.Values["Action"].ToString() == "Index"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Index"
                                                 ? "" : "collapsed")" asp-controller="Roles" asp-action="Index">
                     <i class="bi bi-shield-lock"></i>
                     <span>Roles</span>
@@ -38,7 +39,7 @@
         
         <li class="nav-item">
             <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Sales"
-                                                //&& ViewContext.RouteData.Values["Action"].ToString() == "Index"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Index"
                                                 ? "" : "collapsed")" asp-controller="Sales" asp-action="Index">
                 <i class="bi bi-grid"></i>
                 <span>Ventas</span>
@@ -46,7 +47,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Categories"
-                                                //&& ViewContext.RouteData.Values["Action"].ToString() == "Index"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Index"
                                                 ? "" : "collapsed")" asp-controller="Categories" asp-action="Index">
                 <i class="bi bi-grid"></i>
                 <span>Categorias</span>
@@ -55,24 +56,23 @@
 
         <li class="nav-item">
             <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Product"
-                                                //&& ViewContext.RouteData.Values["Action"].ToString() == "Index"
+                                                && ViewContext.RouteData.Values["Action"].ToString() == "Index"
                                                 ? "" : "collapsed")" asp-controller="Product" asp-action="Index">
                 <i class="bi bi-grid"></i>
                 <span>Productos</span>
             </a>
         </li>
 
-        
+        @if (await _usersService.CurrentUserIsAuthorizedAsync("showUsers", "Usuarios"))
+        {
             <li class="nav-item">
                 <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Users"
-                                                && ViewContext.RouteData.Values["Action"].ToString()=="Index"
                                                 ? "" : "collapsed")" asp-controller="Users" asp-action="Index">
                     <i class="bi bi-file-person"></i>
                     <span>Usuarios</span>
                 </a>
             </li>
-        
-
+        }
 
     </ul>
 

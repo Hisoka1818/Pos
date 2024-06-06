@@ -2,7 +2,6 @@
 using Pos.Web.Data;
 using Pos.Web.Data.Entities;
 using Pos.Web.DTOs;
-using System.Security.AccessControl;
 
 namespace Pos.Web.Helpers
 {
@@ -11,6 +10,7 @@ namespace Pos.Web.Helpers
         public AccountUserDTO ToAccountDTO(User user);
         public PrivatePosRole ToRole(PrivatePosRoleDTO dto);
         public Task<PrivatePosRoleDTO> ToRoleDTOAsync(PrivatePosRole role);
+
         public User ToUser(UserDTO dto);
     }
 
@@ -57,24 +57,13 @@ namespace Pos.Web.Helpers
 
             }).ToListAsync();
 
-            List<SectionForDTO> sections = await _context.Sections.Where(s => !s.IsHidden).Select(p => new SectionForDTO
-             {
-               Id = p.Id,
-               Name = p.Name,
-               Selected = _context.RoleSections.Any(rs => rs.SectionId == p.Id && rs.RoleId == role.Id)
-             }).ToListAsync();
-
             return new PrivatePosRoleDTO
             {
                 Id = role.Id,
                 Name = role.Name,
                 Permissions = permissions,
-                Sections = sections,
             };
-
-
         }
-
         public User ToUser(UserDTO dto)
         {
             return new User

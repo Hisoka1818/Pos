@@ -4,13 +4,13 @@ using Pos.Web.Core.Attributes;
 using Pos.Web.Core.Pagination;
 using Pos.Web.Core;
 using Pos.Web.Data.Entities;
-using Pos.Web.DTOs;
 using Pos.Web.Services;
 using Pos.Web.Helpers;
+using Pos.Web.DTOs;
 
 namespace Pos.Web.Controllers
 {
-    public class UsersController:Controller
+    public class UsersController : Controller
     {
         private readonly ICombosHelper _combosHelper;
         private readonly INotyfService _noty;
@@ -46,7 +46,7 @@ namespace Pos.Web.Controllers
             return View(new UserDTO
             {
                 IsNew = true,
-                PrivatePosRoles = await _combosHelper.GetComboPrivateBlogRolesAsync()
+                PrivateBlogRoles = await _combosHelper.GetComboPrivateBlogRolesAsync()
             });
         }
 
@@ -57,7 +57,7 @@ namespace Pos.Web.Controllers
             if (!ModelState.IsValid)
             {
                 _noty.Error("Debe ajustar los errores de validación.");
-                dto.PrivatePosRoles = await _combosHelper.GetComboPrivateBlogRolesAsync();
+                dto.PrivateBlogRoles = await _combosHelper.GetComboPrivateBlogRolesAsync();
                 return View(dto);
             }
 
@@ -70,8 +70,9 @@ namespace Pos.Web.Controllers
             }
 
             _noty.Error(response.Message);
-            dto.PrivatePosRoles = await _combosHelper.GetComboPrivateBlogRolesAsync();
+            dto.PrivateBlogRoles = await _combosHelper.GetComboPrivateBlogRolesAsync();
             return View(dto);
         }
+
     }
 }

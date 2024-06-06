@@ -29,7 +29,7 @@ namespace Pos.Web.DTOs
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public int PrivateBlogRoleId { get; set; }
 
-        public IEnumerable<SelectListItem>? PrivatePosRoles { get; set; }
+        public IEnumerable<SelectListItem>? PrivateBlogRoles { get; set; }
 
         [Display(Name = "Teléfono")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]

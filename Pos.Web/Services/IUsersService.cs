@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Common;
 using Pos.Web.Core;
 using Pos.Web.Core.Pagination;
 using Pos.Web.Data;
@@ -23,9 +24,13 @@ namespace Pos.Web.Services
 
         Task<bool> CurrentUserIsAuthorizedAsync(string permission, string module);
 
+        Task<bool> CurrentUserIsSuperAdmin();
+
         Task<string> GenerateEmailConfirmationTokenAsync(User user);
 
         Task<string> GeneratePasswordResetTokenAsync(User user);
+
+        Task<User?> GetCurrentUserAsync();
 
         Task<User> GetUserAsync(string email);
 
@@ -34,8 +39,6 @@ namespace Pos.Web.Services
         Task<SignInResult> LoginAsync(LoginDTO model);
 
         Task LogoutAsync();
-
-        Task<bool> CurrentUserIsSuperAdmin();
 
         Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword);
 
@@ -58,9 +61,6 @@ namespace Pos.Web.Services
             _httpContextAccessor = httpContextAccessor;
             _converterHelper = converterHelper;
         }
-
-        //private IHttpContextAccessor _httpContextAccessor;
-
 
         public async Task<IdentityResult> AddUserAsync(User user, string password)
         {
@@ -134,7 +134,6 @@ namespace Pos.Web.Services
             return await _context.Permissions.Include(p => p.RolePermissions)
                                              .AnyAsync(p => (p.Module == module && p.Name == permission)
                                                         && p.RolePermissions.Any(rp => rp.RoleId == user.PrivatePosRoleId));
-
         }
 
         public async Task<bool> CurrentUserIsSuperAdmin()
@@ -176,9 +175,26 @@ namespace Pos.Web.Services
             return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
+        public async Task<User?> GetCurrentUserAsync()
+        {
+            ClaimsUser? claimsUser = _httpContextAccessor.HttpContext?.User;
+
+            if (claimsUser is null)
+            {
+                return null;
+            }
+
+            string? userName = claimsUser.Identity.Name;
+
+            User? user = await GetUserAsync(userName);
+
+            return user;
+        }
+
         public async Task<User> GetUserAsync(string email)
         {
-            User? user = await _context.Users.Include(u => u.PrivatePosRole).FirstOrDefaultAsync(u => u.Email == email);
+            User? user = await _context.Users.Include(u => u.PrivatePosRole)
+                                             .FirstOrDefaultAsync(u => u.Email == email);
 
             return user;
         }
@@ -222,9 +238,9 @@ namespace Pos.Web.Services
             await _signInManager.SignOutAsync();
         }
 
-        public async Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword)
+        public Task<IdentityResult> ResetPasswordAsync(User user, string resetToken, string newPassword)
         {
-            return await _userManager.ResetPasswordAsync(user, resetToken, newPassword);
+            return _userManager.ResetPasswordAsync(user, resetToken, newPassword);
         }
 
         public async Task<IdentityResult> UpdateUserAsync(User user)

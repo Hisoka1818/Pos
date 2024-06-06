@@ -38,7 +38,7 @@ namespace Pos.Web.Helpers
 
         public async Task<IEnumerable<SelectListItem>> GetComboSections()
         {
-            List<SelectListItem> list = await _context.Sections.Select(s => new SelectListItem
+            List<SelectListItem> list = await _context.Roles.Select(s => new SelectListItem //otra cosa
             {
                 Text = s.Name,
                 Value = s.Id.ToString(),
