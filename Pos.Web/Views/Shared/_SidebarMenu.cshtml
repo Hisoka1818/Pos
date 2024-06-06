@@ -63,6 +63,17 @@
             </a>
         </li>
 
+        @if (await _usersService.CurrentUserIsAuthorizedAsync("showUsers", "Usuarios"))
+        {
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"].ToString() == "Users"
+                                                ? "" : "collapsed")" asp-controller="Users" asp-action="Index">
+                    <i class="bi bi-file-person"></i>
+                    <span>Usuarios</span>
+                </a>
+            </li>
+        }
+
     </ul>
 
 </aside>

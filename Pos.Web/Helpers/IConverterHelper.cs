@@ -10,6 +10,8 @@ namespace Pos.Web.Helpers
         public AccountUserDTO ToAccountDTO(User user);
         public PrivatePosRole ToRole(PrivatePosRoleDTO dto);
         public Task<PrivatePosRoleDTO> ToRoleDTOAsync(PrivatePosRole role);
+
+        public User ToUser(UserDTO dto);
     }
 
     public class ConverterHelper : IConverterHelper
@@ -60,6 +62,20 @@ namespace Pos.Web.Helpers
                 Id = role.Id,
                 Name = role.Name,
                 Permissions = permissions,
+            };
+        }
+        public User ToUser(UserDTO dto)
+        {
+            return new User
+            {
+                Id = dto.Id.ToString(),
+                Document = dto.Document,
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                Email = dto.Email,
+                UserName = dto.Email,
+                PrivatePosRoleId = dto.PrivateBlogRoleId,
+                PhoneNumber = dto.PhoneNumber,
             };
         }
     }
