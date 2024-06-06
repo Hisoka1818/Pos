@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pos.Web.Data;
 
@@ -12,10 +11,9 @@ using Pos.Web.Data;
 namespace Pos.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240525200359_pos")]
-    partial class pos
+    partial class DataContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,6 +306,21 @@ namespace Pos.Web.Migrations
                     b.ToTable("RolePermissions");
                 });
 
+            modelBuilder.Entity("Pos.Web.Data.Entities.RoleSection", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RoleId", "SectionId");
+
+                    b.HasIndex("SectionId");
+
+                    b.ToTable("RoleSections");
+                });
+
             modelBuilder.Entity("Pos.Web.Data.Entities.Sales", b =>
                 {
                     b.Property<int>("Id")
@@ -361,6 +374,27 @@ namespace Pos.Web.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("SalesDetail");
+                });
+
+            modelBuilder.Entity("Pos.Web.Data.Entities.Section", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sections");
                 });
 
             modelBuilder.Entity("Pos.Web.Data.Entities.User", b =>
@@ -535,6 +569,25 @@ namespace Pos.Web.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Pos.Web.Data.Entities.RoleSection", b =>
+                {
+                    b.HasOne("Pos.Web.Data.Entities.PrivatePosRole", "Role")
+                        .WithMany("RoleSections")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pos.Web.Data.Entities.Section", "Section")
+                        .WithMany("RoleSections")
+                        .HasForeignKey("SectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("Section");
+                });
+
             modelBuilder.Entity("Pos.Web.Data.Entities.Sales", b =>
                 {
                     b.HasOne("Pos.Web.Data.Entities.Customer", "Customer")
@@ -575,12 +628,19 @@ namespace Pos.Web.Migrations
                 {
                     b.Navigation("RolePermissions");
 
+                    b.Navigation("RoleSections");
+
                     b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Pos.Web.Data.Entities.Product", b =>
                 {
                     b.Navigation("SalesDetails");
+                });
+
+            modelBuilder.Entity("Pos.Web.Data.Entities.Section", b =>
+                {
+                    b.Navigation("RoleSections");
                 });
 #pragma warning restore 612, 618
         }

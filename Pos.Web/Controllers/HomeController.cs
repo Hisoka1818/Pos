@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Web.Models;
-using PrivateBlog.Web.Services;
+using Pos.Web.Services;
 using System.Diagnostics;
 
 namespace Pos.Web.Controllers

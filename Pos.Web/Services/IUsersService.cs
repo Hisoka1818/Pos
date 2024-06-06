@@ -50,13 +50,13 @@ namespace Pos.Web.Services
         private readonly UserManager<User> _userManager;
         private IHttpContextAccessor _httpContextAccessor;
 
-        public UsersService(UserManager<User> userManager, DataContext context, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor)
+        public UsersService(UserManager<User> userManager, DataContext context, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor, IConverterHelper converterHelper)
         {
             _userManager = userManager;
             _context = context;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
-            _converterHelper = converter;
+            _converterHelper = converterHelper;
         }
 
         //private IHttpContextAccessor _httpContextAccessor;
