@@ -40,7 +40,7 @@ namespace PrivatePos.Web.Services
             _context = context;
             _converterHelper = converterHelper;
         }
-
+        
         public async Task<Response<PrivatePosRole>> CreateAsync(PrivatePosRoleDTO dto)
         {
             using (IDbContextTransaction transaction = await _context.Database.BeginTransactionAsync())
